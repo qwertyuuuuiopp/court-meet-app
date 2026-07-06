@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>球场楼下 - 篮球萌新AI陪练</title>
+    <style>
+        :root {
+            --gold: #FDB927;
+            --gold-light: #FFD700;
+            --purple: #552583;
+            --purple-light: #7B3FA0;
+            --dark: #0a0a0a;
+            --dark-card: #141414;
+            --dark-card-hover: #1c1c1c;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-gold: #FDB927;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark);
+            color: var(--text-primary);
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 70px;
+        }
+        .page { display: none; padding: 0; }
+        .page.active { display: block; }
+
+        /* 首页 */
+        .home-hero {
+            position: relative;
+            height: 380px;
+            background: url('hero-bg.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 20px 32px;
+        }
+        .home-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, var(--dark), transparent);
+            z-index: 1;
+        }
+        .home-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .home-hero h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+        }
+        .home-hero h1 span {
+            color: var(--gold);
+        }
+        .home-hero p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        .home-hero .slogan {
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .home-body {
+            padding: 0 16px 20px;
+            margin-top: -10px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .main-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold) 0%, #e6a200 100%);
+            color: var(--dark);
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 800;
+            margin: 16px 0;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(253, 185, 39, 0.3);
+            transition: all 0.3s;
+        }
+        .main-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(253, 185, 39, 0.2);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 24px 0 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .section-more {
+            font-size: 13px;
+            color: var(--gold);
+        }
+
+        .quick-options {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+        .quick-option {
+            flex-shrink: 0;
+            background: var(--dark-card);
+            border: 1px solid rgba(253, 185, 39, 0.15);
+            border-radius: 14px;
+            padding: 14px 18px;
+            min-width: 160px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .quick-option:active {
+            background: var(--dark-card-hover);
+            border-color: rgba(253, 185, 39, 0.4);
+        }
+        .quick-option .time {
+            font-size: 12px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .quick-option .desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .quick-option .arrow {
+            font-size: 16px;
+            color: var(--gold);
+            margin-top: 6px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .grid-item {
+            background: var(--dark-card);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .grid-item:active {
+            background: var(--dark-card-hover);
+            border-color: rgba(253, 185, 39, 0.2);
+        }
+        .grid-item .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .grid-item .label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .skill-card {
+            background: var(--dark-card);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .skill-card:active {
+            background: var(--dark-card-hover);
+            border-color: rgba(253, 185, 39, 0.2);
+        }
+        .skill-tag {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-right: 12px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+        .tag-green { background: rgba(46, 125, 50, 0.2); color: #66bb6a; border: 1px solid rgba(46, 125, 50, 0.3); }
+        .tag-yellow { background: rgba(253, 185, 39, 0.15); color: var(--gold); border: 1px solid rgba(253, 185, 39, 0.3); }
+        .tag-red { background: rgba(198, 40, 40, 0.15); color: #ef5350; border: 1px solid rgba(198, 40, 40, 0.3); }
+        .skill-info { flex: 1; }
+        .skill-info .name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+        .skill-info .desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+        .progress-section {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .progress-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .progress-header img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+        .progress-header .title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .progress-header .subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        .stat-row .num {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .stat-row .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            padding: 4px 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        .nav-item.active { color: var(--gold); }
+        .nav-item .nav-icon { font-size: 22px; }
+        .nav-item .nav-label { font-size: 11px; margin-top: 3px; font-weight: 500; }
+
+        /* 训练页面 */
+        .page-header {
+            padding: 16px;
+            background: var(--dark-card);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .page-header h2 {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        .page-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .training-content {
+            padding: 16px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            transition: all 0.3s;
+        }
+        .step-dot.active { background: var(--gold); box-shadow: 0 0 8px rgba(253, 185, 39, 0.5); }
+
+        .question-card {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .question-card h3 { font-size: 18px; margin-bottom: 20px; font-weight: 700; }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 15px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+        }
+        .option-btn.selected {
+            border-color: var(--gold);
+            background: rgba(253, 185, 39, 0.1);
+            color: var(--gold);
+        }
+
+        .plan-result {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(253, 185, 39, 0.15);
+        }
+        .plan-result h3 {
+            color: var(--gold);
+            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .plan-reason {
+            background: rgba(253, 185, 39, 0.08);
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            border-left: 3px solid var(--gold);
+        }
+        .plan-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .plan-item:last-child { border-bottom: none; }
+        .plan-item .order {
+            width: 32px;
+            height: 32px;
+            background: var(--gold);
+            color: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            margin-right: 14px;
+        }
+        .plan-item .info { flex: 1; }
+        .plan-item .info .name { font-size: 15px; font-weight: 600; }
+        .plan-item .info .time { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+        /* 动作库 */
+        .skills-content {
+            padding: 16px;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-tab.active {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* 动作详情 */
+        .detail-header {
+            position: relative;
+            padding: 60px 20px 24px;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--dark) 100%);
+        }
+        .detail-header .back-btn {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 16px;
+        }
+        .detail-header h2 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .detail-header .skill-tag {
+            display: inline-block;
+        }
+
+        .detail-body {
+            padding: 20px 16px;
+        }
+        .detail-section {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .detail-section h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: var(--gold);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .step-item {
+            display: flex;
+            margin-bottom: 14px;
+        }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: var(--gold);
+            color: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .step-text { font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+
+        .error-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 12px;
+            background: rgba(239, 83, 80, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(239, 83, 80, 0.15);
+        }
+        .error-icon { color: #ef5350; margin-right: 8px; font-size: 16px; }
+        .error-text { font-size: 13px; color: #ef5350; }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(102, 187, 106, 0.08);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(102, 187, 106, 0.15);
+        }
+        .check-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #66bb6a;
+            border-radius: 6px;
+            margin-right: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: transparent;
+            transition: all 0.2s;
+        }
+        .check-box.checked {
+            background: #66bb6a;
+            color: white;
+        }
+        .check-text { font-size: 13px; color: var(--text-secondary); }
+
+        /* 规则页 */
+        .rules-content {
+            padding: 16px;
+        }
+        .scene-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .scene-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 13px;
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .scene-tab.active {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+            font-weight: 700;
+        }
+
+        .rule-card {
+            background: var(--dark-card);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .rule-card h4 { font-size: 16px; margin-bottom: 8px; color: var(--text-primary); font-weight: 600; }
+        .rule-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        .rule-card .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(253, 185, 39, 0.1);
+            color: var(--gold);
+            border-radius: 6px;
+            font-size: 11px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* 我的页面 */
+        .profile-hero {
+            position: relative;
+            padding: 40px 20px 24px;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--dark) 100%);
+            text-align: center;
+        }
+        .profile-hero .avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--dark-card);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 20px rgba(253, 185, 39, 0.3);
+        }
+        .profile-hero .name { font-size: 20px; font-weight: 700; }
+        .profile-hero .level {
+            font-size: 13px;
+            color: var(--gold);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .profile-body {
+            padding: 16px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .stats-row .stat-item { text-align: center; }
+        .stats-row .stat-item .num {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .stats-row .stat-item .label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+        .menu-list {
+            background: var(--dark-card);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:active { background: var(--dark-card-hover); }
+        .menu-item .menu-icon { font-size: 22px; margin-right: 14px; }
+        .menu-item .menu-text { flex: 1; font-size: 15px; color: var(--text-primary); }
+        .menu-item .menu-arrow { color: var(--text-secondary); }
+
+        .gear-section {
+            display: none;
+            padding: 16px;
+        }
+        .gear-section.active { display: block; }
+        .gear-card {
+            background: var(--dark-card);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .gear-card h4 { font-size: 15px; margin-bottom: 8px; color: var(--gold); font-weight: 600; }
+        .gear-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .achievement-item {
+            background: var(--dark-card);
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .achievement-item .icon { font-size: 28px; margin-bottom: 8px; }
+        .achievement-item .name { font-size: 11px; color: var(--text-secondary); }
+        .achievement-item.locked { opacity: 0.35; }
+
+        /* 战术板 */
+        .tactics-content {
+            padding: 16px;
+        }
+        .tactics-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .tactics-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 14px;
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .tactics-tab.active {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+            font-weight: 700;
+        }
+
+        .court-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .half-court {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            background: #1a2e1a;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .court-outer {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            right: 5%;
+            bottom: 5%;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+        }
+        .court-key {
+            position: absolute;
+            top: 5%;
+            left: 30%;
+            right: 30%;
+            height: 35%;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: none;
+        }
+        .court-circle-top {
+            position: absolute;
+            top: 30%;
+            left: 35%;
+            right: 35%;
+            height: 20%;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+        }
+        .court-circle-bottom {
+            position: absolute;
+            bottom: 5%;
+            left: 40%;
+            right: 40%;
+            height: 15%;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50% 50% 0 0;
+            border-bottom: none;
+        }
+        .court-three-line {
+            position: absolute;
+            top: 5%;
+            left: 10%;
+            right: 10%;
+            height: 45%;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 0 0 50% 50%;
+            border-top: none;
+        }
+        .hoop {
+            position: absolute;
+            top: 8%;
+            left: 46%;
+            width: 8%;
+            height: 4%;
+            background: #ff6b35;
+            border-radius: 0 0 50% 50%;
+            border: 2px solid white;
+        }
+        .player {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        .player.team {
+            background: var(--gold);
+            color: var(--dark);
+            box-shadow: 0 0 10px rgba(253, 185, 39, 0.4);
+        }
+        .player.enemy {
+            background: #c62828;
+            color: white;
+            font-size: 10px;
+        }
+
+        /* 牛角战术动画 */
+        @keyframes hornsUp1 {
+            0%, 100% { left: 35%; top: 55%; }
+            50% { left: 30%; top: 45%; }
+        }
+        @keyframes hornsUp2 {
+            0%, 100% { left: 65%; top: 55%; }
+            50% { left: 70%; top: 45%; }
+        }
+        @keyframes pgDrive {
+            0%, 100% { left: 50%; top: 78%; }
+            50% { left: 50%; top: 55%; }
+        }
+        .animate-horns #p2 { animation: hornsUp1 3s ease-in-out infinite; }
+        .animate-horns #p3 { animation: hornsUp2 3s ease-in-out infinite; }
+        .animate-horns #p1 { animation: pgDrive 3s ease-in-out infinite; }
+
+        /* 挡拆动画 */
+        @keyframes screenUp {
+            0%, 100% { left: 35%; top: 55%; }
+            50% { left: 40%; top: 65%; }
+        }
+        @keyframes pgPick {
+            0%, 100% { left: 50%; top: 78%; }
+            50% { left: 35%; top: 60%; }
+        }
+        .animate-pick #p2 { animation: screenUp 3s ease-in-out infinite; }
+        .animate-pick #p1 { animation: pgPick 3s ease-in-out infinite; }
+
+        .tactics-info {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .tactics-info h3 {
+            font-size: 18px;
+            color: var(--gold);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .tactics-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .tactics-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .t-step {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        .t-num {
+            width: 24px;
+            height: 24px;
+            background: var(--gold);
+            color: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .future-notice {
+            background: linear-gradient(135deg, rgba(85, 37, 131, 0.3) 0%, rgba(253, 185, 39, 0.1) 100%);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(253, 185, 39, 0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .future-icon {
+            font-size: 28px;
+        }
+        .future-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+        .future-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* 打卡成功弹窗 */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .success-overlay.active { display: flex; }
+        .success-overlay img {
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            object-fit: cover;
+        }
+        .success-overlay h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .success-overlay p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .success-overlay .close-btn {
+            padding: 14px 48px;
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 首页 -->
+<div class="page active" id="page-home">
+    <div class="home-hero">
+        <div class="home-hero-content">
+            <h1>世界很大<br><span>球场就在楼下</span></h1>
+            <p>从零基础到敢上场，AI陪你每天练一点</p>
+            <div class="slogan">共同进步 · 致青春 · 热爱篮球的我们</div>
+        </div>
+    </div>
+
+    <div class="home-body">
+        <button class="main-btn" onclick="showPage('page-training')">🏀 生成今日训练计划</button>
+
+        <div class="section-header">
+            <div class="section-title">⚡ 快速开始</div>
+        </div>
+        <div class="quick-options">
+            <div class="quick-option" onclick="startQuick('15分钟', '家里', '运球')">
+                <div class="time">15 分钟</div>
+                <div class="desc">家里 · 运球基础</div>
+                <div class="arrow">›</div>
+            </div>
+            <div class="quick-option" onclick="startQuick('30分钟', '球场', '投篮')">
+                <div class="time">30 分钟</div>
+                <div class="desc">有篮筐球场 · 投篮练习</div>
+                <div class="arrow">›</div>
+            </div>
+            <div class="quick-option" onclick="startQuick('1小时', '球场', '全都要')">
+                <div class="time">1 小时</div>
+                <div class="desc">有篮筐球场 · 综合训练</div>
+                <div class="arrow">›</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="grid-item" onclick="showPage('page-skills')">
+                <div class="icon">📚</div>
+                <div class="label">动作库</div>
+            </div>
+            <div class="grid-item" onclick="showPage('page-rules')">
+                <div class="icon">📋</div>
+                <div class="label">规则手册</div>
+            </div>
+        </div>
+        <div class="grid-2">
+            <div class="grid-item" onclick="showPage('page-tactics')">
+                <div class="icon">🏆</div>
+                <div class="label">AI战术板</div>
+                <div style="font-size: 10px; color: var(--gold); margin-top: 4px;">概念版</div>
+            </div>
+            <div class="grid-item" onclick="showPage('page-profile')">
+                <div class="icon">⭐</div>
+                <div class="label">我的</div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <div class="section-title">🔥 热门动作</div>
+            <div class="section-more">查看全部 ›</div>
+        </div>
+        <div class="skill-card" onclick="showSkillDetail('原地运球')">
+            <span class="skill-tag tag-green">萌新</span>
+            <div class="skill-info">
+                <div class="name">原地运球</div>
+                <div class="desc">培养球感的第一步</div>
+            </div>
+        </div>
+        <div class="skill-card" onclick="showSkillDetail('三步上篮')">
+            <span class="skill-tag tag-green">萌新</span>
+            <div class="skill-info">
+                <div class="name">三步上篮</div>
+                <div class="desc">最基础的得分方式</div>
+            </div>
+        </div>
+        <div class="skill-card" onclick="showSkillDetail('投篮手型')">
+            <span class="skill-tag tag-green">萌新</span>
+            <div class="skill-info">
+                <div class="name">投篮手型</div>
+                <div class="desc">正确手型是命中的前提</div>
+            </div>
+        </div>
+        <div class="skill-card" onclick="showSkillDetail('变向运球')">
+            <span class="skill-tag tag-yellow">进阶</span>
+            <div class="skill-info">
+                <div class="name">变向运球</div>
+                <div class="desc">突破防守的基础</div>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <img src="basketball-glow.jpg" alt="basketball">
+                <div>
+                    <div class="title">我的训练进度</div>
+                    <div class="subtitle">坚持就是胜利，Mamba Mentality</div>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div>
+                    <div class="num" id="stat-days">3</div>
+                    <div class="label">训练天数</div>
+                </div>
+                <div>
+                    <div class="num" id="stat-minutes">120</div>
+                    <div class="label">训练分钟</div>
+                </div>
+                <div>
+                    <div class="num" id="stat-skills">5</div>
+                    <div class="label">已学动作</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 今日训练页 -->
+<div class="page" id="page-training">
+    <div class="page-header">
+        <div class="back-btn" onclick="showPage('page-home')">‹ 返回首页</div>
+        <h2>今日训练</h2>
+        <p>回答4个问题，AI为你生成专属计划</p>
+    </div>
+
+    <div class="training-content">
+        <div id="training-step1">
+            <div class="step-indicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+            </div>
+            <div class="question-card">
+                <h3>1. 今天有多少时间？</h3>
+                <button class="option-btn" onclick="selectOption(this, 'time', '15分钟')">15分钟</button>
+                <button class="option-btn" onclick="selectOption(this, 'time', '30分钟')">30分钟</button>
+                <button class="option-btn" onclick="selectOption(this, 'time', '1小时')">1小时</button>
+            </div>
+        </div>
+
+        <div id="training-step2" style="display:none;">
+            <div class="step-indicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+            </div>
+            <div class="question-card">
+                <h3>2. 有什么场地？</h3>
+                <button class="option-btn" onclick="selectOption(this, 'place', '家里')">家里（无篮筐）</button>
+                <button class="option-btn" onclick="selectOption(this, 'place', '小区空地')">小区空地（无篮筐）</button>
+                <button class="option-btn" onclick="selectOption(this, 'place', '有篮筐球场')">有篮筐的球场</button>
+            </div>
+        </div>
+
+        <div id="training-step3" style="display:none;">
+            <div class="step-indicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+            </div>
+            <div class="question-card">
+                <h3>3. 当前水平？</h3>
+                <button class="option-btn" onclick="selectOption(this, 'level', '完全零基础')">完全零基础（不会拍球）</button>
+                <button class="option-btn" onclick="selectOption(this, 'level', '会拍球')">会拍球但不太稳</button>
+                <button class="option-btn" onclick="selectOption(this, 'level', '有基础')">会基础动作，想提高</button>
+            </div>
+        </div>
+
+        <div id="training-step4" style="display:none;">
+            <div class="step-indicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot active"></div>
+            </div>
+            <div class="question-card">
+                <h3>4. 今天想练什么？</h3>
+                <button class="option-btn" onclick="selectOption(this, 'goal', '运球')">运球</button>
+                <button class="option-btn" onclick="selectOption(this, 'goal', '投篮')">投篮</button>
+                <button class="option-btn" onclick="selectOption(this, 'goal', '上篮')">上篮</button>
+                <button class="option-btn" onclick="selectOption(this, 'goal', '全都要')">全都要</button>
+            </div>
+        </div>
+
+        <div id="training-result" style="display:none;">
+            <div class="plan-result">
+                <h3>🎯 你的今日训练计划</h3>
+                <div class="plan-reason" id="plan-reason">根据你的条件，我们推荐以下训练内容...</div>
+                <div id="plan-items"></div>
+            </div>
+            <button class="main-btn" onclick="finishTraining()">✅ 完成今日训练并打卡</button>
+        </div>
+    </div>
+</div>
+
+<!-- 动作库页 -->
+<div class="page" id="page-skills">
+    <div class="page-header">
+        <div class="back-btn" onclick="showPage('page-home')">‹ 返回首页</div>
+        <h2>动作库</h2>
+        <p>20个动作，从萌新到实战</p>
+    </div>
+    <div class="skills-content">
+        <div class="filter-tabs">
+            <div class="filter-tab active" onclick="filterSkills('all', this)">全部</div>
+            <div class="filter-tab" onclick="filterSkills('green', this)">萌新</div>
+            <div class="filter-tab" onclick="filterSkills('yellow', this)">进阶</div>
+            <div class="filter-tab" onclick="filterSkills('red', this)">实战</div>
+        </div>
+        <div class="filter-tabs">
+            <div class="filter-tab active" onclick="filterCategory('all', this)">全部</div>
+            <div class="filter-tab" onclick="filterCategory('dribble', this)">运球</div>
+            <div class="filter-tab" onclick="filterCategory('shoot', this)">投篮</div>
+            <div class="filter-tab" onclick="filterCategory('layup', this)">上篮</div>
+            <div class="filter-tab" onclick="filterCategory('break', this)">突破</div>
+            <div class="filter-tab" onclick="filterCategory('defense', this)">防守</div>
+            <div class="filter-tab" onclick="filterCategory('footwork', this)">脚步</div>
+        </div>
+        <div id="skills-list"></div>
+    </div>
+</div>
+
+<!-- 动作详情页 -->
+<div class="page" id="page-skill-detail">
+    <div class="detail-header">
+        <div class="back-btn" onclick="showPage('page-skills')">‹ 返回动作库</div>
+        <h2 id="detail-name">动作名称</h2>
+        <span class="skill-tag" id="detail-tag">标签</span>
+    </div>
+    <div class="detail-body">
+        <div class="detail-section">
+            <h3>📋 步骤拆解</h3>
+            <div id="detail-steps"></div>
+        </div>
+        <div class="detail-section">
+            <h3>❌ 常见错误</h3>
+            <div id="detail-errors"></div>
+        </div>
+        <div class="detail-section">
+            <h3>✅ 自测检查点</h3>
+            <div id="detail-checks"></div>
+        </div>
+        <button class="main-btn" onclick="addToPlan()">➕ 加入今日训练</button>
+    </div>
+</div>
+
+<!-- 规则手册页 -->
+<div class="page" id="page-rules">
+    <div class="page-header">
+        <div class="back-btn" onclick="showPage('page-home')">‹ 返回首页</div>
+        <h2>规则手册</h2>
+        <p>搞懂规则，上场不慌</p>
+    </div>
+    <div class="rules-content">
+        <div class="scene-tabs">
+            <div class="scene-tab active" onclick="switchScene('street', this)">野球场</div>
+            <div class="scene-tab" onclick="switchScene('school', this)">学校比赛</div>
+            <div class="scene-tab" onclick="switchScene('solo', this)">自己练习</div>
+        </div>
+        <div id="rules-content"></div>
+    </div>
+</div>
+
+<!-- 战术板页面 -->
+<div class="page" id="page-tactics">
+    <div class="page-header">
+        <div class="back-btn" onclick="showPage('page-home')">‹ 返回首页</div>
+        <h2>AI战术板</h2>
+        <p>概念演示 · 未来版本将支持自定义阵容</p>
+    </div>
+    <div class="tactics-content">
+        <div class="tactics-selector">
+            <div class="tactics-tab active" onclick="switchTactic('horns', this)">牛角战术</div>
+            <div class="tactics-tab" onclick="switchTactic('pickroll', this)">挡拆战术</div>
+        </div>
+
+        <div class="court-container">
+            <div class="half-court">
+                <!-- 球场线条 -->
+                <div class="court-outer"></div>
+                <div class="court-key"></div>
+                <div class="court-circle-top"></div>
+                <div class="court-circle-bottom"></div>
+                <div class="court-three-line"></div>
+                <div class="hoop"></div>
+
+                <!-- 球员 -->
+                <div class="player team" id="p1" style="left: 50%; top: 78%;">1</div>
+                <div class="player team" id="p2" style="left: 35%; top: 55%;">2</div>
+                <div class="player team" id="p3" style="left: 65%; top: 55%;">3</div>
+                <div class="player team" id="p4" style="left: 20%; top: 35%;">4</div>
+                <div class="player team" id="p5" style="left: 80%; top: 35%;">5</div>
+
+                <!-- 敌方 -->
+                <div class="player enemy" style="left: 50%; top: 62%;">X</div>
+                <div class="player enemy" style="left: 35%; top: 42%;">X</div>
+                <div class="player enemy" style="left: 65%; top: 42%;">X</div>
+
+                <!-- 路线 -->
+                <div class="route-line" id="route1"></div>
+            </div>
+        </div>
+
+        <div class="tactics-info" id="tactics-info">
+            <h3>🏀 牛角战术 (Horns)</h3>
+            <p>两个内线球员站在罚球线两端（牛角位），后卫在弧顶持球。内线同时上提做掩护，后卫可选择突破或分球。</p>
+            <div class="tactics-steps">
+                <div class="t-step"><span class="t-num">1</span> PG弧顶持球</div>
+                <div class="t-step"><span class="t-num">2</span> 双内线同时上提掩护</div>
+                <div class="t-step"><span class="t-num">3</span> PG借掩护突破或分球</div>
+            </div>
+        </div>
+
+        <div class="future-notice">
+            <div class="future-icon">🚀</div>
+            <div class="future-text">
+                <div class="future-title">未来版本功能</div>
+                <div class="future-desc">输入你的5人阵容和对手特点，AI自动生成针对性战术，并模拟跑位动画，给出成功率分析和调整建议。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 我的页面 -->
+<div class="page" id="page-profile">
+    <div class="profile-hero">
+        <div class="avatar">🏀</div>
+        <div class="name">篮球萌新</div>
+        <div class="level">Lv.1 初学者 · Mamba Mentality</div>
+    </div>
+    <div class="profile-body">
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="num">3</div>
+                <div class="label">训练天数</div>
+            </div>
+            <div class="stat-item">
+                <div class="num">120</div>
+                <div class="label">训练分钟</div>
+            </div>
+            <div class="stat-item">
+                <div class="num">5</div>
+                <div class="label">已学动作</div>
+            </div>
+        </div>
+
+        <div class="menu-list">
+            <div class="menu-item" onclick="toggleGear()">
+                <span class="menu-icon">🎽</span>
+                <span class="menu-text">装备指南</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">🏆</span>
+                <span class="menu-text">我的成就</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span class="menu-text">训练日历</span>
+                <span class="menu-arrow">›</span>
+            </div>
+        </div>
+
+        <div class="gear-section" id="gear-section">
+            <div class="section-header" style="margin-top: 20px;">
+                <div class="section-title">🛡️ 护具</div>
+            </div>
+            <div class="gear-card">
+                <h4>护膝</h4>
+                <p>保护膝盖，缓冲落地冲击。有旧伤或体重较大者必备；日常训练可选轻薄款。</p>
+            </div>
+            <div class="gear-card">
+                <h4>护踝</h4>
+                <p>防止脚踝扭伤，提供支撑。脚踝有伤史强烈推荐；选择带绑带款。</p>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">👟 球鞋</div>
+            </div>
+            <div class="gear-card">
+                <h4>按脚型选</h4>
+                <p>正常足：大多数球鞋均可。扁平足：选支撑性强、足弓有支撑的鞋款。高足弓：选缓震好的鞋款。</p>
+            </div>
+            <div class="gear-card">
+                <h4>按打法选</h4>
+                <p>后卫：轻便低帮，启动快。锋线：平衡型。中锋：高帮缓震，保护性强。</p>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">🏀 篮球</div>
+            </div>
+            <div class="gear-card">
+                <h4>材质选择</h4>
+                <p>橡胶球：便宜耐磨，室外用。PU球：手感好，室内外通用，业余首选。真皮球：手感最好，室内专用。</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+            <div class="section-header">
+                <div class="section-title">🏅 成就徽章</div>
+            </div>
+            <div class="achievement-grid">
+                <div class="achievement-item">
+                    <div class="icon">🔥</div>
+                    <div class="name">首次训练</div>
+                </div>
+                <div class="achievement-item">
+                    <div class="icon">📅</div>
+                    <div class="name">连续3天</div>
+                </div>
+                <div class="achievement-item locked">
+                    <div class="icon">⭐</div>
+                    <div class="name">连续7天</div>
+                </div>
+                <div class="achievement-item locked">
+                    <div class="icon">🏀</div>
+                    <div class="name">学会10个动作</div>
+                </div>
+                <div class="achievement-item locked">
+                    <div class="icon">💪</div>
+                    <div class="name">训练100分钟</div>
+                </div>
+                <div class="achievement-item locked">
+                    <div class="icon">👑</div>
+                    <div class="name">球场老手</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 打卡成功弹窗 -->
+<div class="success-overlay" id="success-overlay">
+    <img src="trophy.jpg" alt="success">
+    <h2>打卡成功！</h2>
+    <p>今天又多了一个热爱篮球的人<br>Mamba Mentality</p>
+    <button class="close-btn" onclick="closeSuccess()">继续加油</button>
+</div>
+
+<!-- 底部导航 -->
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="showPage('page-home')">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">首页</div>
+    </div>
+    <div class="nav-item" onclick="showPage('page-profile')">
+        <div class="nav-icon">⭐</div>
+        <div class="nav-label">我的</div>
+    </div>
+</div>
+
+<script>
+// 数据
+const skillsData = [
+    { name: '原地运球', category: 'dribble', level: 'green', desc: '最基础的控球，培养球感',
+      steps: ['双脚与肩同宽，膝盖微屈，重心降低', '五指自然张开，用手指和指根触球，掌心空出', '手腕下压带动手指拍球，力量适中', '眼睛看前方，不要低头看球', '左右手各练1分钟为一组'],
+      errors: ['掌心拍球（控球不稳，声音沉闷）', '直腿站立（重心太高，容易被断）', '全程低头看球（场上无法观察队友和防守）'],
+      checks: ['我能连续原地运球30次不掉球吗？', '运球时我能看着前方而不是盯着球吗？', '左右手都能稳定运球吗？'] },
+    { name: '行进间运球', category: 'dribble', level: 'green', desc: '走路/跑步时运球，衔接移动',
+      steps: ['原地运球稳定后，尝试边拍球边走路', '保持运球高度在腰胯之间', '步伐与运球节奏配合：拍一次球迈一步', '先慢走熟练后再尝试慢跑', '注意视线始终看前方'],
+      errors: ['走路节奏和运球节奏脱节', '球越拍越高，失去控制', '只看球不看路，容易撞到人'],
+      checks: ['我能边走路边运球不掉球吗？', '运球高度是否始终控制在腰胯之间？', '我能抬头看前方同时运球吗？'] },
+    { name: '变向运球', category: 'dribble', level: 'yellow', desc: '急停变向，突破防守的基础',
+      steps: ['先向一侧运球吸引防守', '突然用力拍球，球从身前变向到另一侧', '同时身体重心迅速转移', '另一只手接球继续运球推进', '初期可原地练习变向手感'],
+      errors: ['变向时球过高，容易被抢断', '重心没有跟上，变向后失去平衡', '拍球力量太小，球变向不到位'],
+      checks: ['我能连续做10次变向不掉球吗？', '变向时身体重心是否快速转移？', '变向后能否立即加速推进？'] },
+    { name: '背后运球', category: 'dribble', level: 'yellow', desc: '保护球+变向，提高控球稳定性',
+      steps: ['将球拍到身体正下方', '手从身体后侧绕过，把球拨向另一侧', '另一只手在身前接球', '重心降低，身体稍微前倾', '先原地慢速练习，再逐渐加速'],
+      errors: ['球打到屁股或后腿', '手没有主动拨球，只是等球弹过来', '直立站着做，重心太高不稳'],
+      checks: ['我能原地背后运球5次不掉球吗？', '背后运球后另一只手能顺利接球吗？', '做动作时重心是否保持较低？'] },
+    { name: '投篮手型', category: 'shoot', level: 'green', desc: '正确的手型是命中的前提',
+      steps: ['五指自然分开，球的重心落在食指和中指中间', '手心与球之间留有空隙（不要贴掌）', '投篮手肘向内收，形成L型', '非投篮手只辅助扶球，不发力', '出手时用食指和中指最后拨球'],
+      errors: ['掌心贴球（出手不旋转，容易偏）', '手肘外翻（发力方向不稳定）', '双手同时推球（没有拨球旋转）'],
+      checks: ['我出手后球是否有明显后旋？', '投篮时是否只有食指和中指最后离开球？', '手心是否始终空出没有贴球？'] },
+    { name: '原地投篮', category: 'shoot', level: 'green', desc: '站立投篮，建立发力节奏',
+      steps: ['双脚与肩同宽，膝盖微屈准备发力', '持球于额头前上方，手肘内收', '屈膝下沉积蓄力量', '蹬地起身同时抬肘伸臂出手', '手腕下压拨球，球向后旋转飞出'],
+      errors: ['出手点太低（容易被盖且弧度平）', '只靠手臂力量，没有腿部发力', '出手后手没有保持跟随（ goose neck）'],
+      checks: ['我能否从罚球线距离稳定命中？', '投篮时是否感受到腿部发力？', '出手后手是否保持鹅颈姿势？'] },
+    { name: '跳投基础', category: 'shoot', level: 'yellow', desc: '原地起跳投篮，增加出手高度',
+      steps: ['接球后迅速屈膝准备起跳', '蹬地垂直起跳，同时举球到出手点', '到达最高点时出手（不是上升中出手）', '出手动作与原地投篮相同', '落地时屈膝缓冲'],
+      errors: ['起跳前球还没举到位', '在上升过程中就出手（没有高度优势）', '落地时直腿（容易伤膝盖）'],
+      checks: ['我能在最高点稳定出手吗？', '起跳是否垂直而不是往前跳？', '落地时是否屈膝缓冲？'] },
+    { name: '抛投', category: 'shoot', level: 'yellow', desc: '近篮区域的柔和出手方式',
+      steps: ['突破到篮下，防守人已经起跳封盖', '单脚起跳（通常是外侧脚）', '单手将球轻轻向上抛起，弧度要高', '利用篮板打板入筐', '身体可以稍微侧倾躲避封盖'],
+      errors: ['抛得太平（容易被封盖）', '力量太大球飞过篮板', '没有利用篮板打板'],
+      checks: ['抛投弧度是否足够高？', '是否利用了篮板打板？', '能否在身体侧倾时保持出手稳定？'] },
+    { name: '三步上篮', category: 'layup', level: 'green', desc: '最基础的得分方式，必学',
+      steps: ['从右路突破，抱球迈右脚（第1步）', '左脚大步跨出（第2步），同时把球举到胸前', '右脚蹬地起跳（第3步），右手托球向上挑篮', '瞄准篮板上方小方框的右上角', '双脚同时落地，屈膝缓冲'],
+      errors: ['多走一步变成走步（裁判会吹）', '第2步跨得不够大（导致起跳距离过远）', '挑篮时手腕僵硬（应该用手指拨球）'],
+      checks: ['我能从罚球线附近三步上篮命中吗？', '我的步伐节奏是右-左-跳吗？', '左右手上篮都能完成吗？'] },
+    { name: '反手上篮', category: 'layup', level: 'yellow', desc: '躲避封盖，从反侧打板得分',
+      steps: ['从右路突破到篮下', '当防守人在右侧封盖时，将球换到左手', '左手从篮板反侧向上挑球打板', '利用身体隔开防守人和球', '弧度要高，避开封盖'],
+      errors: ['没有护球，被防守人直接拍掉', '打板位置不对（太偏或太低）', '没有利用身体隔开防守人'],
+      checks: ['我能否在右侧防守时完成反手上篮？', '打板位置是否在反侧小方框？', '是否用身体有效保护了球？'] },
+    { name: '欧洲步上篮', category: 'layup', level: 'red', desc: '变向欺骗防守，实战高频技巧',
+      steps: ['从一侧突破，第1步向该侧迈出', '第2步突然向另一侧大跨步', '防守人被第一步骗过，无法跟上第二步', '起跳上篮，利用时间差得分', '眼神和肩膀配合假动作'],
+      errors: ['两步节奏不明显，防守人没被欺骗', '第2步跨得不够大，无法摆脱', '起跳点太近或太远'],
+      checks: ['我的两步节奏是否能让防守人失衡？', '第2步是否足够大到甩开防守？', '上篮时是否利用了时间差？'] },
+    { name: '三威胁姿势', category: 'break', level: 'green', desc: '接球后的标准准备姿势',
+      steps: ['接球瞬间双脚同时落地，确定轴心脚', '膝盖弯曲，重心降低（可突可投可传）', '双手持球于胸前，肘部外扩护球', '头部抬起观察防守人和队友位置', '保持身体随时可以启动的状态'],
+      errors: ['站得笔直（无法快速启动）', '球放得太低（容易被掏）', '埋头看球（看不到防守人和队友）'],
+      checks: ['接球后能否立即进入低重心姿势？', '球是否在胸前位置且被肘部保护？', '头部是否抬起观察场上局势？'] },
+    { name: '顺步突破', category: 'break', level: 'yellow', desc: '同侧脚快速启动过人',
+      steps: ['三威胁姿势，确定轴心脚', '向防守人一侧放球，同侧脚同时迈出', '第1步要爆发式蹬地，拉开距离', '低重心快速推进', '注意保护球，另一只手挡住防守人'],
+      errors: ['先迈脚后放球（走步）', '第1步太慢，防守人跟上来了', '重心太高，被防守人堵住路线'],
+      checks: ['放球和迈脚是否几乎同时？', '第1步是否有爆发力？', '突破时重心是否保持低位？'] },
+    { name: '交叉步突破', category: 'break', level: 'yellow', desc: '交叉步变向，经典过人方式',
+      steps: ['向一侧做假动作或运球', '外侧脚蹬地，内侧脚向另一侧交叉迈出', '同时将球拍到另一侧', '身体重心迅速转移', '加速摆脱防守人'],
+      errors: ['假动作太假，防守人没被欺骗', '交叉步太小，没有摆脱空间', '重心转移慢，被防守人贴住'],
+      checks: ['假动作是否让防守人重心移动？', '交叉步是否足够大到创造空间？', '重心转移是否迅速？'] },
+    { name: '防守基本姿势', category: 'defense', level: 'green', desc: '滑步防守的前提，降低重心',
+      steps: ['双脚开立比肩略宽', '膝盖大幅弯曲，臀部下沉', '背部挺直，胸部前倾', '双手张开，干扰传球路线', '视线在对手腰部（不要被假动作骗）'],
+      errors: ['站得太直（无法快速移动）', '双手下垂（无法干扰传球和投篮）', '看对手眼睛或球（容易被假动作骗）'],
+      checks: ['重心是否低到可以随时横向移动？', '双手是否张开在对手传球路线上？', '视线是否在对手腰部？'] },
+    { name: '滑步防守', category: 'defense', level: 'yellow', desc: '横向移动跟防，不失去位置',
+      steps: ['保持防守基本姿势', '向一侧移动时，该侧脚先迈出', '另一只脚快速跟上，不要交叉', '始终保持身体正面朝向进攻人', '移动时脚底不要离地太高（摩擦声）'],
+      errors: ['交叉步移动（容易被一步过）', '移动时重心上下起伏（太慢）', '身体侧向进攻人（失去防守位置）'],
+      checks: ['横向移动时是否没有交叉步？', '重心是否保持稳定？', '是否始终正面朝向进攻人？'] },
+    { name: '辅助防守站位', category: 'defense', level: 'yellow', desc: '协防补位，保护队友',
+      steps: ['持球人突破过掉队友时，立即收缩协防', '站在持球人和篮筐之间的传球路线上', '双手高举，干扰投篮和传球视线', '不要完全放空自己对位的人', '迫使持球人停球或传球'],
+      errors: ['协防太猛，完全放空自己防守的人', '站位离持球人太远（形同虚设）', '协防后没有及时回位'],
+      checks: ['协防时是否站在传球路线上？', '是否高举双手干扰视线？', '协防后能否及时回防自己人？'] },
+    { name: '篮下转身', category: 'footwork', level: 'yellow', desc: '背身接球后的转身得分',
+      steps: ['背对篮筐接球，降低重心', '以一只脚为轴，向一侧转身', '转身同时把球举到出手位置', '利用身体隔开防守人', '打板或直接投篮得分'],
+      errors: ['转身时重心太高（容易被顶开）', '球暴露在外（容易被抢断）', '转身后出手点太低（容易被盖）'],
+      checks: ['转身是否流畅且保持低重心？', '球是否被身体保护？', '出手点是否足够高？'] },
+    { name: '后撤步', category: 'footwork', level: 'red', desc: '创造投篮空间的实战脚步',
+      steps: ['持球面对防守人，做出突破假动作', '防守人后退时，前脚向后撤一大步', '后脚跟上，双脚同时落地', '迅速起跳投篮', '利用时间差，防守人来不及封盖'],
+      errors: ['后撤步太小，没有创造空间', '后撤后身体不稳，影响投篮', '后撤太慢，防守人跟上了'],
+      checks: ['后撤步是否创造出了足够投篮空间？', '后撤后身体是否稳定？', '投篮是否利用了时间差？'] },
+    { name: '梦幻脚步（简化版）', category: 'footwork', level: 'red', desc: '篮下假动作骗起防守人',
+      steps: ['篮下接球，面向篮筐做投篮假动作', '防守人起跳封盖时，向一侧迈一步', '利用防守人落地的时间差', '从另一侧打板得分', '眼神和肩膀配合假动作'],
+      errors: ['假动作幅度太小，防守人没跳', '脚步混乱，自己走步了', '最后出手点太低被封盖'],
+      checks: ['假动作是否骗起防守人？', '脚步是否清晰没有走步？', '出手时是否利用时间差？'] }
+];
+
+const rulesData = {
+    street: [
+        { title: '走步', content: '抱球后走了超过2步，或者停球后轴心脚移动。野球场最常见的争议。', tag: '最常见' },
+        { title: '打手犯规', content: '对方投篮或上篮时，打到手腕及以下部位。野球场一般打手就交换球权。', tag: '注意' },
+        { title: '阻挡 vs 撞人', content: '防守人没站稳就被撞上 → 阻挡犯规；进攻人主动撞已站稳的防守人 → 进攻犯规。', tag: '易混淆' },
+        { title: '二次运球', content: '运球停球后，再次开始运球。野球场经常因为想多了而二运。', tag: '新手易犯' },
+        { title: '回场', content: '进攻方把球带进前场后，又带回后场。全场时尤其要注意。', tag: '全场' },
+        { title: '出界', content: '球或持球人踩到边线/底线。救球时容易踩线。', tag: '注意' }
+    ],
+    school: [
+        { title: '24秒进攻违例', content: '必须在24秒内完成投篮且球碰框。接近24秒要果断出手。', tag: '时间规则' },
+        { title: '3秒违例', content: '进攻球员不能在对方禁区待超过3秒。大个子尤其注意。', tag: '内线注意' },
+        { title: '5秒违例', content: '被严密防守时5秒内必须传球/运球/投篮。不要停球太久。', tag: '持球注意' },
+        { title: '8秒过半场', content: '必须在8秒内把球运到前场。后卫接球后快速推进。', tag: '后卫注意' },
+        { title: '技术犯规', content: '辱骂裁判/对手，或故意拖延比赛。罚球1次+球权。', tag: '纪律' }
+    ],
+    solo: [
+        { title: '一个人练投篮', content: '给自己设定目标：连续命中X个才算一组；没命中重新计数。模拟比赛压力。', tag: '方法' },
+        { title: '一个人练运球', content: '设定路线（绕障碍物、折返跑），模拟实战移动。不要原地不动拍球。', tag: '方法' },
+        { title: '怎么判断动作对不对', content: '手机录像→对比教学视频；或对着镜子练观察手型/姿势。', tag: '自查' },
+        { title: '有效训练时长', content: '专注练习30分钟 > 随便拍球2小时。设定目标，记录进步。', tag: '效率' }
+    ]
+};
+
+const plans = {
+    '15分钟_家里_完全零基础_运球': {
+        reason: '你只有15分钟且在家里，没有篮筐，所以推荐原地运球和球感练习。',
+        items: [
+            { name: '原地运球（右手）', time: '3分钟' },
+            { name: '原地运球（左手）', time: '3分钟' },
+            { name: '指尖拨球', time: '3分钟' },
+            { name: '绕腿运球', time: '3分钟' },
+            { name: '双手交替运球', time: '3分钟' }
+        ]
+    },
+    '30分钟_有篮筐球场_完全零基础_投篮': {
+        reason: '你有30分钟和篮筐，零基础想练投篮，我们从手型和原地投篮开始。',
+        items: [
+            { name: '投篮手型练习', time: '10分钟' },
+            { name: '原地投篮（近距离）', time: '15分钟' },
+            { name: '球感练习（指尖拨球）', time: '5分钟' }
+        ]
+    },
+    '1小时_有篮筐球场_会拍球_全都要': {
+        reason: '你有1小时、有篮筐、会拍球，今天来一套综合训练，涵盖运球、上篮和投篮。',
+        items: [
+            { name: '运球热身（原地+行进间）', time: '15分钟' },
+            { name: '三步上篮练习', time: '20分钟' },
+            { name: '原地投篮', time: '20分钟' },
+            { name: '防守基本姿势', time: '5分钟' }
+        ]
+    }
+};
+
+let currentTraining = {};
+let currentStep = 1;
+let stats = { days: 3, minutes: 120, skills: 5 };
+
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (pageId === 'page-home') document.querySelectorAll('.nav-item')[0].classList.add('active');
+    if (pageId === 'page-profile') document.querySelectorAll('.nav-item')[1].classList.add('active');
+
+    if (pageId === 'page-skills') renderSkills();
+    if (pageId === 'page-rules') renderRules('street');
+    if (pageId === 'page-tactics') initTactics();
+}
+
+function selectOption(btn, key, value) {
+    currentTraining[key] = value;
+    btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    setTimeout(() => {
+        if (currentStep < 4) {
+            document.getElementById(`training-step${currentStep}`).style.display = 'none';
+            currentStep++;
+            document.getElementById(`training-step${currentStep}`).style.display = 'block';
+        } else {
+            showPlanResult();
+        }
+    }, 300);
+}
+
+function showPlanResult() {
+    document.getElementById('training-step4').style.display = 'none';
+    document.getElementById('training-result').style.display = 'block';
+
+    const key = `${currentTraining.time}_${currentTraining.place}_${currentTraining.level}_${currentTraining.goal}`;
+    const plan = plans[key] || plans['1小时_有篮筐球场_会拍球_全都要'];
+
+    document.getElementById('plan-reason').textContent = plan.reason;
+
+    const itemsHtml = plan.items.map((item, i) => `
+        <div class="plan-item">
+            <div class="order">${i + 1}</div>
+            <div class="info">
+                <div class="name">${item.name}</div>
+                <div class="time">⏱️ ${item.time}</div>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('plan-items').innerHTML = itemsHtml;
+}
+
+function startQuick(time, place, goal) {
+    currentTraining = { time, place, level: '会拍球', goal };
+    currentStep = 4;
+    showPage('page-training');
+    document.getElementById('training-step1').style.display = 'none';
+    document.getElementById('training-step2').style.display = 'none';
+    document.getElementById('training-step3').style.display = 'none';
+    document.getElementById('training-step4').style.display = 'none';
+    showPlanResult();
+}
+
+function finishTraining() {
+    stats.days++;
+    stats.minutes += 30;
+    updateStats();
+    document.getElementById('success-overlay').classList.add('active');
+}
+
+function closeSuccess() {
+    document.getElementById('success-overlay').classList.remove('active');
+    showPage('page-home');
+    resetTraining();
+}
+
+function resetTraining() {
+    currentTraining = {};
+    currentStep = 1;
+    document.getElementById('training-step1').style.display = 'block';
+    document.getElementById('training-step2').style.display = 'none';
+    document.getElementById('training-step3').style.display = 'none';
+    document.getElementById('training-step4').style.display = 'none';
+    document.getElementById('training-result').style.display = 'none';
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+}
+
+function updateStats() {
+    document.getElementById('stat-days').textContent = stats.days;
+    document.getElementById('stat-minutes').textContent = stats.minutes;
+    document.getElementById('stat-skills').textContent = stats.skills;
+}
+
+let currentFilter = 'all';
+let currentCategory = 'all';
+
+function renderSkills() {
+    const list = document.getElementById('skills-list');
+    const filtered = skillsData.filter(s => {
+        const matchLevel = currentFilter === 'all' || s.level === currentFilter;
+        const matchCat = currentCategory === 'all' || s.category === currentCategory;
+        return matchLevel && matchCat;
+    });
+
+    list.innerHTML = filtered.map(s => `
+        <div class="skill-card" onclick="showSkillDetail('${s.name}')">
+            <span class="skill-tag tag-${s.level === 'green' ? 'green' : s.level === 'yellow' ? 'yellow' : 'red'}">${s.level === 'green' ? '萌新' : s.level === 'yellow' ? '进阶' : '实战'}</span>
+            <div class="skill-info">
+                <div class="name">${s.name}</div>
+                <div class="desc">${s.desc}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterSkills(level, btn) {
+    currentFilter = level;
+    btn.parentElement.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderSkills();
+}
+
+function filterCategory(cat, btn) {
+    currentCategory = cat;
+    const tabs = btn.parentElement.querySelectorAll('.filter-tab');
+    tabs.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderSkills();
+}
+
+function showSkillDetail(name) {
+    const skill = skillsData.find(s => s.name === name);
+    if (!skill) return;
+
+    document.getElementById('detail-name').textContent = skill.name;
+    const tagEl = document.getElementById('detail-tag');
+    tagEl.textContent = skill.level === 'green' ? '萌新必练' : skill.level === 'yellow' ? '进阶技巧' : '实战应用';
+    tagEl.className = 'skill-tag tag-' + (skill.level === 'green' ? 'green' : skill.level === 'yellow' ? 'yellow' : 'red');
+
+    document.getElementById('detail-steps').innerHTML = skill.steps.map((step, i) => `
+        <div class="step-item">
+            <div class="step-num">${i + 1}</div>
+            <div class="step-text">${step}</div>
+        </div>
+    `).join('');
+
+    document.getElementById('detail-errors').innerHTML = skill.errors.map(err => `
+        <div class="error-item">
+            <span class="error-icon">❌</span>
+            <span class="error-text">${err}</span>
+        </div>
+    `).join('');
+
+    document.getElementById('detail-checks').innerHTML = skill.checks.map(check => `
+        <div class="check-item">
+            <div class="check-box"></div>
+            <span class="check-text">${check}</span>
+        </div>
+    `).join('');
+
+    document.querySelectorAll('.check-box').forEach(box => {
+        box.addEventListener('click', function() {
+            this.classList.toggle('checked');
+            this.textContent = this.classList.contains('checked') ? '✓' : '';
+        });
+    });
+
+    showPage('page-skill-detail');
+}
+
+function addToPlan() {
+    alert('已加入今日训练计划！');
+}
+
+function switchScene(scene, btn) {
+    btn.parentElement.querySelectorAll('.scene-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderRules(scene);
+}
+
+function renderRules(scene) {
+    const container = document.getElementById('rules-content');
+    const rules = rulesData[scene];
+    container.innerHTML = rules.map(r => `
+        <div class="rule-card">
+            <h4>${r.title}</h4>
+            <p>${r.content}</p>
+            <span class="tag">${r.tag}</span>
+        </div>
+    `).join('');
+}
+
+function toggleGear() {
+    const section = document.getElementById('gear-section');
+    section.classList.toggle('active');
+}
+
+// 战术板
+function initTactics() {
+    const court = document.querySelector('.half-court');
+    court.classList.add('animate-horns');
+    court.classList.remove('animate-pick');
+}
+
+function switchTactic(tactic, btn) {
+    btn.parentElement.querySelectorAll('.tactics-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const court = document.querySelector('.half-court');
+    const info = document.getElementById('tactics-info');
+
+    if (tactic === 'horns') {
+        court.classList.add('animate-horns');
+        court.classList.remove('animate-pick');
+        info.innerHTML = `
+            <h3>🏀 牛角战术 (Horns)</h3>
+            <p>两个内线球员站在罚球线两端（牛角位），后卫在弧顶持球。内线同时上提做掩护，后卫可选择突破或分球。</p>
+            <div class="tactics-steps">
+                <div class="t-step"><span class="t-num">1</span> PG弧顶持球</div>
+                <div class="t-step"><span class="t-num">2</span> 双内线同时上提掩护</div>
+                <div class="t-step"><span class="t-num">3</span> PG借掩护突破或分球</div>
+            </div>
+        `;
+    } else {
+        court.classList.add('animate-pick');
+        court.classList.remove('animate-horns');
+        info.innerHTML = `
+            <h3>🏀 挡拆战术 (Pick & Roll)</h3>
+            <p>内线球员上提为持球人做掩护，持球人借掩护突破或投篮，掩护人顺下接球得分。篮球中最基础也最高效的战术。</p>
+            <div class="tactics-steps">
+                <div class="t-step"><span class="t-num">1</span> 内线上提做掩护</div>
+                <div class="t-step"><span class="t-num">2</span> PG借掩护突破</div>
+                <div class="t-step"><span class="t-num">3</span> 掩护人顺下或外弹</div>
+            </div>
+        `;
+    }
+}
+</script>
+
+</body>
+</html>

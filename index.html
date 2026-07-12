@@ -876,6 +876,66 @@
         .animate-fastbreak #p2 { animation: fbWing 3s ease-in-out infinite; }
         .animate-fastbreak #p3 { animation: fbWing2 3s ease-in-out infinite; }
 
+        /* 牛角横切动画 */
+        @keyframes flareScreenM {
+            0%, 100% { left: 35%; top: 55%; }
+            50% { left: 55%; top: 50%; }
+        }
+        @keyframes flareShooterM {
+            0%, 100% { left: 65%; top: 55%; }
+            50% { left: 75%; top: 65%; }
+        }
+        @keyframes flarePassM {
+            0%, 100% { left: 50%; top: 78%; }
+            50% { left: 45%; top: 60%; }
+        }
+        .animate-hornsflare #p2 { animation: flareScreenM 3s ease-in-out infinite; }
+        .animate-hornsflare #p3 { animation: flareShooterM 3s ease-in-out infinite; }
+        .animate-hornsflare #p1 { animation: flarePassM 3s ease-in-out infinite; }
+
+        /* 错位单打动画 */
+        @keyframes isoClearM {
+            0%, 100% { left: 50%; top: 78%; }
+            50% { left: 25%; top: 55%; }
+        }
+        @keyframes isoDriveM {
+            0%, 100% { left: 35%; top: 55%; }
+            50% { left: 40%; top: 25%; }
+        }
+        .animate-isolation #p1 { animation: isoClearM 3s ease-in-out infinite; }
+        .animate-isolation #p2 { animation: isoDriveM 3s ease-in-out infinite; }
+
+        /* 反跑动画 */
+        @keyframes backdoorCutM {
+            0% { left: 65%; top: 55%; }
+            30% { left: 70%; top: 50%; }
+            70% { left: 55%; top: 20%; }
+            100% { left: 50%; top: 15%; }
+        }
+        @keyframes backdoorPassM {
+            0%, 100% { left: 50%; top: 78%; }
+            50% { left: 55%; top: 60%; }
+        }
+        .animate-backdoor #p3 { animation: backdoorCutM 3s ease-in-out infinite; }
+        .animate-backdoor #p1 { animation: backdoorPassM 3s ease-in-out infinite; }
+
+        /* 空间挡拆动画 */
+        @keyframes spreadPnrM {
+            0%, 100% { left: 50%; top: 78%; }
+            50% { left: 40%; top: 55%; }
+        }
+        @keyframes spreadScreenM {
+            0%, 100% { left: 35%; top: 55%; }
+            50% { left: 42%; top: 68%; }
+        }
+        @keyframes spreadCornerM {
+            0%, 100% { left: 20%; top: 35%; }
+            50% { left: 15%; top: 75%; }
+        }
+        .animate-spreadpnr #p1 { animation: spreadPnrM 3s ease-in-out infinite; }
+        .animate-spreadpnr #p2 { animation: spreadScreenM 3s ease-in-out infinite; }
+        .animate-spreadpnr #p4 { animation: spreadCornerM 3s ease-in-out infinite; }
+
         .tactics-info {
             background: var(--dark-card);
             border-radius: 20px;
@@ -1515,6 +1575,10 @@
             <div class="tactics-tab" onclick="switchTactic('pickroll', this)">挡拆战术</div>
             <div class="tactics-tab" onclick="switchTactic('triangle', this)">三角进攻</div>
             <div class="tactics-tab" onclick="switchTactic('fastbreak', this)">快攻战术</div>
+            <div class="tactics-tab" onclick="switchTactic('hornsflare', this)">牛角横切</div>
+            <div class="tactics-tab" onclick="switchTactic('isolation', this)">错位单打</div>
+            <div class="tactics-tab" onclick="switchTactic('backdoor', this)">反跑战术</div>
+            <div class="tactics-tab" onclick="switchTactic('spreadpnr', this)">空间挡拆</div>
         </div>
 
         <div class="court-container">
@@ -2036,7 +2100,7 @@ function switchTactic(tactic, btn) {
     const court = document.querySelector('.half-court');
     const info = document.getElementById('tactics-info');
 
-    const animMap = { horns: 'animate-horns', pickroll: 'animate-pick', triangle: 'animate-triangle', fastbreak: 'animate-fastbreak' };
+    const animMap = { horns: 'animate-horns', pickroll: 'animate-pick', triangle: 'animate-triangle', fastbreak: 'animate-fastbreak', hornsflare: 'animate-hornsflare', isolation: 'animate-isolation', backdoor: 'animate-backdoor', spreadpnr: 'animate-spreadpnr' };
     court.className = 'half-court ' + animMap[tactic];
 
     const tacticsData = {
@@ -2059,6 +2123,26 @@ function switchTactic(tactic, btn) {
             title: '⚡ 快攻战术 (Fast Break)',
             desc: '防守转进攻的最高效得分方式。PG中路推进，两侧边锋快下，形成3打2人数优势。',
             steps: ['抢到篮板快速推进', 'PG中路+两侧边锋快下', '多打少分球上篮']
+        },
+        hornsflare: {
+            title: '🏀 牛角横切 (Horns Flare)',
+            desc: '牛角阵型变体。一侧内线横移为射手做flare screen（闪掩护），射手借掩护向外跑出空位接球投篮。',
+            steps: ['双内线牛角位落位', '一侧内线给射手做flare screen', '射手借掩护外弹接球投篮']
+        },
+        isolation: {
+            title: '🎯 错位单打 (Isolation)',
+            desc: '通过挡拆制造换防错位（大打小/小打大），清空一侧让优势球员单打。现代NBA最常见的终结方式。',
+            steps: ['通过挡拆制造错位', '其他球员拉开清空一侧', '优势球员单打终结或吸引包夹分球']
+        },
+        backdoor: {
+            title: '🏃 反跑战术 (Backdoor Cut)',
+            desc: '防守人过度贴身时，进攻球员假装向外跑然后突然反方向切入篮下接球上篮。破解紧逼的经典战术。',
+            steps: ['观察防守人是否过度贴身', '假装向外跑后突然反跑', '队友传球接球上篮']
+        },
+        spreadpnr: {
+            title: '🎯 空间挡拆 (Spread P&R)',
+            desc: '4名射手全部拉开到三分线外，仅PG和内线做挡拆。最大化挡拆空间和传球路线，防守收缩就被三分惩罚。',
+            steps: ['4射手拉开空间', 'PG和内线高位做挡拆', '防守收缩则分球三分，不收则突破']
         }
     };
 
@@ -2452,7 +2536,7 @@ function renderTacticsResultM(top5, scores, reasons, aiAnalysis) {
 
 function applyTacticM(tactic) {
     closeTacticsModalM();
-    const demoTactics = ['horns', 'pickroll', 'triangle', 'fastbreak'];
+    const demoTactics = ['horns', 'pickroll', 'triangle', 'fastbreak', 'hornsflare', 'isolation', 'backdoor', 'spreadpnr'];
     if (demoTactics.includes(tactic)) {
         const tab = document.querySelector(`.tactics-tab[onclick*="${tactic}"]`);
         if (tab) {
@@ -2463,10 +2547,12 @@ function applyTacticM(tactic) {
         const cat = tacticsDB[tactic].cat;
         const name = tacticsDB[tactic].name;
         let similar = 'pickroll';
-        if (name.includes('牛角')) similar = 'horns';
-        else if (name.includes('挡拆') || name.includes('手递手') || name.includes('Spain')) similar = 'pickroll';
+        if (name.includes('牛角')) similar = 'hornsflare';
+        else if (name.includes('挡拆') || name.includes('手递手') || name.includes('Spain')) similar = 'spreadpnr';
         else if (name.includes('三角') || name.includes('高低') || name.includes('内外') || name.includes('背身')) similar = 'triangle';
         else if (cat === '转换进攻' || name.includes('快') || name.includes('反跑')) similar = 'fastbreak';
+        else if (name.includes('单打') || name.includes('错位')) similar = 'isolation';
+        else if (name.includes('反跑') || name.includes('空切')) similar = 'backdoor';
         else similar = 'horns';
         const tab = document.querySelector(`.tactics-tab[onclick*="${similar}"]`);
         if (tab) {

@@ -838,6 +838,44 @@
         .animate-pick #p2 { animation: screenUp 3s ease-in-out infinite; }
         .animate-pick #p1 { animation: pgPick 3s ease-in-out infinite; }
 
+        /* 三角进攻动画 */
+        @keyframes triC {
+            0%, 100% { left: 20%; top: 35%; }
+            50% { left: 15%; top: 25%; }
+        }
+        @keyframes triPF {
+            0%, 100% { left: 80%; top: 35%; }
+            50% { left: 85%; top: 25%; }
+        }
+        @keyframes triPost {
+            0%, 100% { left: 50%; top: 25%; }
+            33% { left: 45%; top: 30%; }
+            66% { left: 55%; top: 30%; }
+        }
+        .animate-triangle #p4 { animation: triC 4s ease-in-out infinite; }
+        .animate-triangle #p5 { animation: triPF 4s ease-in-out infinite; }
+        .animate-triangle #p1 { animation: triPost 4s ease-in-out infinite; }
+
+        /* 快攻动画 */
+        @keyframes fbPG {
+            0% { left: 50%; top: 78%; }
+            50% { left: 50%; top: 55%; }
+            100% { left: 50%; top: 10%; }
+        }
+        @keyframes fbWing {
+            0% { left: 35%; top: 55%; }
+            50% { left: 30%; top: 35%; }
+            100% { left: 25%; top: 10%; }
+        }
+        @keyframes fbWing2 {
+            0% { left: 65%; top: 55%; }
+            50% { left: 70%; top: 35%; }
+            100% { left: 75%; top: 10%; }
+        }
+        .animate-fastbreak #p1 { animation: fbPG 3s ease-in-out infinite; }
+        .animate-fastbreak #p2 { animation: fbWing 3s ease-in-out infinite; }
+        .animate-fastbreak #p3 { animation: fbWing2 3s ease-in-out infinite; }
+
         .tactics-info {
             background: var(--dark-card);
             border-radius: 20px;
@@ -906,6 +944,235 @@
             color: var(--text-secondary);
             line-height: 1.6;
         }
+
+        /* AI战术分析按钮(移动版) */
+        .tactics-ai-btn-m {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--gold) 100%);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+        }
+        .tactics-ai-btn-m:active { transform: scale(0.98); }
+
+        /* AI战术分析模态框(移动版) */
+        .tactics-modal-m-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(6px);
+            z-index: 500;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .tactics-modal-m-overlay.active { display: flex; }
+        .tactics-modal-m {
+            width: 100%;
+            max-width: 430px;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: var(--dark-card);
+            border-radius: 24px 24px 0 0;
+            border: 1px solid rgba(253, 185, 39, 0.2);
+            animation: modalSlideUpM 0.35s ease-out;
+        }
+        @keyframes modalSlideUpM {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .tactics-modal-m-header {
+            padding: 20px 24px 12px;
+            background: linear-gradient(135deg, var(--purple) 0%, transparent 100%);
+            border-radius: 24px 24px 0 0;
+            position: relative;
+        }
+        .tactics-modal-m-header h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .tactics-modal-m-header p { font-size: 12px; color: var(--text-secondary); }
+        .tactics-modal-m-close {
+            position: absolute;
+            top: 16px; right: 20px;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: none; color: white; font-size: 16px; cursor: pointer;
+        }
+        .tactics-modal-m-body { padding: 16px 24px 24px; }
+        .player-row-m {
+            display: grid;
+            grid-template-columns: 32px 1fr 80px;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+        }
+        .player-row-m .p-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--gold); color: var(--dark);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 13px;
+        }
+        .player-row-m select, .player-row-m input {
+            padding: 8px 10px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); color: white;
+            font-size: 12px; outline: none; width: 100%;
+        }
+        .player-row-m select:focus, .player-row-m input:focus { border-color: var(--gold); }
+        .player-row-m select option { background: var(--dark-card); }
+        .skill-row-m { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+        .skill-tag-m {
+            padding: 3px 8px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: transparent; color: var(--text-secondary);
+            font-size: 10px; cursor: pointer; user-select: none;
+        }
+        .skill-tag-m.selected { background: var(--gold); color: var(--dark); border-color: var(--gold); font-weight: 600; }
+        .analyze-btn-m {
+            width: 100%; margin-top: 16px; padding: 14px;
+            border-radius: 14px; border: none;
+            background: linear-gradient(135deg, var(--gold) 0%, #e6a200 100%);
+            color: var(--dark); font-size: 15px; font-weight: 800; cursor: pointer;
+        }
+        .analyze-btn-m:disabled { opacity: 0.5; }
+        .tactics-result-m {
+            margin-top: 20px; padding: 20px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(85, 37, 131, 0.15) 0%, rgba(253, 185, 39, 0.08) 100%);
+            border: 1px solid rgba(253, 185, 39, 0.2);
+            display: none;
+        }
+        .tactics-result-m.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .tactics-result-m .r-badge {
+            display: inline-block; padding: 4px 12px; border-radius: 16px;
+            background: var(--gold); color: var(--dark);
+            font-size: 11px; font-weight: 700; margin-bottom: 10px;
+        }
+        .tactics-result-m h4 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+        .tactics-result-m .r-reason { font-size: 13px; line-height: 1.7; color: var(--text-primary); margin-bottom: 14px; }
+        .tactics-result-m .r-scores { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .score-m { flex: 1; min-width: 80px; }
+        .score-m .s-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 3px; }
+        .score-m .s-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
+        .score-m .s-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--purple), var(--gold)); }
+        .score-m .s-val { font-size: 11px; color: var(--gold); margin-top: 2px; font-weight: 600; }
+        .r-actions { margin-top: 16px; display: flex; gap: 10px; }
+        .r-btn {
+            flex: 1; padding: 12px; border-radius: 12px;
+            border: 1px solid rgba(253, 185, 39, 0.3);
+            background: transparent; color: var(--gold);
+            font-size: 13px; font-weight: 600; cursor: pointer;
+        }
+        .r-btn.primary { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+
+        /* AI陪练聊天(移动版) */
+        .chat-fab-m {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold) 0%, #e6a200 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(253, 185, 39, 0.4);
+            z-index: 400;
+            animation: fabPulseM 3s ease-in-out infinite;
+        }
+        @keyframes fabPulseM {
+            0%, 100% { box-shadow: 0 4px 20px rgba(253, 185, 39, 0.4); }
+            50% { box-shadow: 0 4px 28px rgba(253, 185, 39, 0.7), 0 0 0 10px rgba(253, 185, 39, 0); }
+        }
+        .chat-fab-m .badge-m {
+            position: absolute; top: -2px; right: -2px;
+            width: 16px; height: 16px;
+            background: #c62828; border-radius: 50%;
+            font-size: 9px; color: white;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--dark);
+        }
+        .chat-window-m {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--dark);
+            z-index: 500;
+            display: none;
+            flex-direction: column;
+        }
+        .chat-window-m.active { display: flex; }
+        .chat-header-m {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--dark-card) 100%);
+            display: flex; align-items: center; gap: 12px;
+            padding-top: calc(16px + env(safe-area-inset-top, 0px));
+        }
+        .chat-back-m { font-size: 22px; cursor: pointer; color: var(--text-secondary); }
+        .chat-avatar-m {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--gold); display: flex;
+            align-items: center; justify-content: center; font-size: 18px;
+        }
+        .chat-header-m .name { font-weight: 700; font-size: 14px; }
+        .chat-header-m .status { font-size: 11px; color: var(--gold); }
+        .chat-messages-m {
+            flex: 1; overflow-y: auto;
+            padding: 16px; display: flex;
+            flex-direction: column; gap: 12px;
+        }
+        .chat-messages-m::-webkit-scrollbar { width: 3px; }
+        .chat-messages-m::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+        .chat-msg-m {
+            max-width: 85%; padding: 12px 16px;
+            border-radius: 16px; font-size: 13px; line-height: 1.6;
+            animation: msgInM 0.3s ease-out; white-space: pre-wrap;
+        }
+        @keyframes msgInM { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-msg-m.bot { align-self: flex-start; background: rgba(255,255,255,0.08); border-bottom-left-radius: 6px; }
+        .chat-msg-m.user { align-self: flex-end; background: rgba(253, 185, 39, 0.15); border-bottom-right-radius: 6px; }
+        .chat-quick-m {
+            padding: 0 16px 10px;
+            display: flex; flex-wrap: wrap; gap: 6px;
+            overflow-x: auto;
+        }
+        .chat-quick-btn-m {
+            padding: 7px 14px; border-radius: 16px;
+            border: 1px solid rgba(253, 185, 39, 0.3);
+            background: transparent; color: var(--gold);
+            font-size: 11px; cursor: pointer; white-space: nowrap;
+        }
+        .chat-quick-btn-m:active { background: rgba(253, 185, 39, 0.1); }
+        .chat-input-bar-m {
+            padding: 12px 16px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; gap: 8px;
+        }
+        .chat-input-m {
+            flex: 1; padding: 10px 14px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); color: white;
+            font-size: 13px; outline: none;
+        }
+        .chat-input-m:focus { border-color: var(--gold); }
+        .chat-send-m {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: var(--gold); border: none; color: var(--dark);
+            font-size: 16px; cursor: pointer;
+        }
+        .typing-m { display: flex; gap: 4px; align-items: center; padding: 12px 16px !important; }
+        .typing-m .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: typingM 1.2s infinite; }
+        .typing-m .dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-m .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingM { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-7px); opacity: 1; } }
 
         /* 打卡成功弹窗 */
         .success-overlay {
@@ -1226,12 +1493,15 @@
     <div class="page-header">
         <div class="back-btn" onclick="showPage('page-home')">‹ 返回首页</div>
         <h2>AI战术板</h2>
-        <p>概念演示 · 未来版本将支持自定义阵容</p>
+        <p>输入阵容，AI为你生成专属战术</p>
     </div>
     <div class="tactics-content">
+        <button class="tactics-ai-btn-m" onclick="openTacticsModalM()">🤖 AI阵容分析</button>
         <div class="tactics-selector">
             <div class="tactics-tab active" onclick="switchTactic('horns', this)">牛角战术</div>
             <div class="tactics-tab" onclick="switchTactic('pickroll', this)">挡拆战术</div>
+            <div class="tactics-tab" onclick="switchTactic('triangle', this)">三角进攻</div>
+            <div class="tactics-tab" onclick="switchTactic('fastbreak', this)">快攻战术</div>
         </div>
 
         <div class="court-container">
@@ -1268,14 +1538,6 @@
                 <div class="t-step"><span class="t-num">1</span> PG弧顶持球</div>
                 <div class="t-step"><span class="t-num">2</span> 双内线同时上提掩护</div>
                 <div class="t-step"><span class="t-num">3</span> PG借掩护突破或分球</div>
-            </div>
-        </div>
-
-        <div class="future-notice">
-            <div class="future-icon">🚀</div>
-            <div class="future-text">
-                <div class="future-title">未来版本功能</div>
-                <div class="future-desc">输入你的5人阵容和对手特点，AI自动生成针对性战术，并模拟跑位动画，给出成功率分析和调整建议。</div>
             </div>
         </div>
     </div>
@@ -1751,8 +2013,7 @@ function toggleGear() {
 // 战术板
 function initTactics() {
     const court = document.querySelector('.half-court');
-    court.classList.add('animate-horns');
-    court.classList.remove('animate-pick');
+    court.className = 'half-court animate-horns';
 }
 
 function switchTactic(tactic, btn) {
@@ -1762,31 +2023,361 @@ function switchTactic(tactic, btn) {
     const court = document.querySelector('.half-court');
     const info = document.getElementById('tactics-info');
 
-    if (tactic === 'horns') {
-        court.classList.add('animate-horns');
-        court.classList.remove('animate-pick');
-        info.innerHTML = `
-            <h3>🏀 牛角战术 (Horns)</h3>
-            <p>两个内线球员站在罚球线两端（牛角位），后卫在弧顶持球。内线同时上提做掩护，后卫可选择突破或分球。</p>
-            <div class="tactics-steps">
-                <div class="t-step"><span class="t-num">1</span> PG弧顶持球</div>
-                <div class="t-step"><span class="t-num">2</span> 双内线同时上提掩护</div>
-                <div class="t-step"><span class="t-num">3</span> PG借掩护突破或分球</div>
+    const animMap = { horns: 'animate-horns', pickroll: 'animate-pick', triangle: 'animate-triangle', fastbreak: 'animate-fastbreak' };
+    court.className = 'half-court ' + animMap[tactic];
+
+    const tacticsData = {
+        horns: {
+            title: '🏀 牛角战术 (Horns)',
+            desc: '两个内线球员站在罚球线两端（牛角位），后卫在弧顶持球。内线同时上提做掩护，后卫可选择突破或分球。',
+            steps: ['PG弧顶持球', '双内线同时上提掩护', 'PG借掩护突破或分球']
+        },
+        pickroll: {
+            title: '🏀 挡拆战术 (Pick & Roll)',
+            desc: '内线球员上提为持球人做掩护，持球人借掩护突破或投篮，掩护人顺下接球得分。篮球中最基础也最高效的战术。',
+            steps: ['内线上提做掩护', 'PG借掩护突破', '掩护人顺下或外弹']
+        },
+        triangle: {
+            title: '🔺 三角进攻 (Triangle)',
+            desc: '低位背身+底角+侧翼形成三角，通过背身单打、无球掩护和空切创造得分。Jordan和Kobe的夺冠利器。',
+            steps: ['C低位背身接球形成三角', 'PG观察防守反应', 'C单打或分球空位队友']
+        },
+        fastbreak: {
+            title: '⚡ 快攻战术 (Fast Break)',
+            desc: '防守转进攻的最高效得分方式。PG中路推进，两侧边锋快下，形成3打2人数优势。',
+            steps: ['抢到篮板快速推进', 'PG中路+两侧边锋快下', '多打少分球上篮']
+        }
+    };
+
+    const data = tacticsData[tactic];
+    info.innerHTML = `
+        <h3>${data.title}</h3>
+        <p>${data.desc}</p>
+        <div class="tactics-steps">
+            ${data.steps.map((s, i) => `<div class="t-step"><span class="t-num">${i+1}</span> ${s}</div>`).join('')}
+        </div>
+    `;
+}
+</script>
+
+<!-- AI战术分析模态框(移动版) -->
+<div class="tactics-modal-m-overlay" id="tacticsModalM" onclick="if(event.target===this)closeTacticsModalM()">
+    <div class="tactics-modal-m">
+        <div class="tactics-modal-m-header">
+            <button class="tactics-modal-m-close" onclick="closeTacticsModalM()">✕</button>
+            <h3>🤖 AI阵容战术分析</h3>
+            <p>输入5人阵容，AI匹配最佳战术</p>
+        </div>
+        <div class="tactics-modal-m-body">
+            <div id="playerInputsM"></div>
+            <button class="analyze-btn-m" id="analyzeBtnM" onclick="analyzeTacticsM()">🔍 AI分析最佳战术</button>
+            <div class="tactics-result-m" id="tacticsResultM"></div>
+        </div>
+    </div>
+</div>
+
+<!-- AI陪练聊天(移动版) -->
+<div class="chat-fab-m" onclick="toggleChatM()">
+    🏀
+    <div class="badge-m">1</div>
+</div>
+<div class="chat-window-m" id="chatWindowM">
+    <div class="chat-header-m">
+        <div class="chat-back-m" onclick="closeChatM()">‹</div>
+        <div class="chat-avatar-m">🏀</div>
+        <div>
+            <div class="name">球场见</div>
+            <div class="status">在线 · 陪你迈出第一步</div>
+        </div>
+    </div>
+    <div class="chat-messages-m" id="chatMessagesM">
+        <div class="chat-msg-m bot">嗨！我是球场见 🏀 你的AI篮球陪练
+
+今天想练点什么？不用怕，谁都是从第一次运球开始的。
+
+我可以帮你：
+• 制定训练计划
+• 纠正投篮/运球动作
+• 讲解篮球规则
+• 克服上场紧张
+
+点击下方问题或直接输入，随时问我！</div>
+    </div>
+    <div class="chat-quick-m" id="chatQuickM">
+        <button class="chat-quick-btn-m" onclick="sendQuickReplyM('新手怎么开始')">新手怎么开始？</button>
+        <button class="chat-quick-btn-m" onclick="sendQuickReplyM('投篮不进')">投篮不进</button>
+        <button class="chat-quick-btn-m" onclick="sendQuickReplyM('三步上篮怎么练')">三步上篮</button>
+        <button class="chat-quick-btn-m" onclick="sendQuickReplyM('不敢上场')">不敢上场</button>
+    </div>
+    <div class="chat-input-bar-m">
+        <input class="chat-input-m" id="chatInputM" placeholder="输入你的篮球问题..." onkeydown="if(event.key==='Enter')sendUserMessageM()">
+        <button class="chat-send-m" onclick="sendUserMessageM()">➤</button>
+    </div>
+</div>
+
+<script>
+// ========== 移动版AI战术分析 ==========
+const skillOptsM = ['投篮', '运球', '速度', '力量', '篮板', '传球', '防守', '三分'];
+const posOptsM = [
+    { v: 'PG', l: 'PG · 控卫' }, { v: 'SG', l: 'SG · 分卫' },
+    { v: 'SF', l: 'SF · 小前' }, { v: 'PF', l: 'PF · 大前' }, { v: 'C', l: 'C · 中锋' }
+];
+
+function openTacticsModalM() {
+    const overlay = document.getElementById('tacticsModalM');
+    const container = document.getElementById('playerInputsM');
+    container.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        const row = document.createElement('div');
+        row.className = 'player-row-m';
+        row.innerHTML = `
+            <div class="p-num">${i}</div>
+            <select id="mpos_${i}">
+                ${posOptsM.map(p => `<option value="${p.v}">${p.l}</option>`).join('')}
+            </select>
+            <input type="number" id="mhgt_${i}" value="${[175,180,185,190,195][i-1]}" min="150" max="230">
+            <div class="skill-row-m" id="mskills_${i}">
+                ${skillOptsM.map(s => `<span class="skill-tag-m" onclick="this.classList.toggle('selected')" data-s="${s}">${s}</span>`).join('')}
             </div>
         `;
-    } else {
-        court.classList.add('animate-pick');
-        court.classList.remove('animate-horns');
-        info.innerHTML = `
-            <h3>🏀 挡拆战术 (Pick & Roll)</h3>
-            <p>内线球员上提为持球人做掩护，持球人借掩护突破或投篮，掩护人顺下接球得分。篮球中最基础也最高效的战术。</p>
-            <div class="tactics-steps">
-                <div class="t-step"><span class="t-num">1</span> 内线上提做掩护</div>
-                <div class="t-step"><span class="t-num">2</span> PG借掩护突破</div>
-                <div class="t-step"><span class="t-num">3</span> 掩护人顺下或外弹</div>
-            </div>
-        `;
+        container.appendChild(row);
     }
+    // Pre-select defaults
+    const defaults = [[0,1,2],[0,7],[2,5],[3,4,6],[3,4,6]];
+    defaults.forEach((skills, idx) => {
+        const wrapper = document.getElementById(`mskills_${idx + 1}`);
+        if (wrapper) skills.forEach(s => { const t = wrapper.querySelectorAll('.skill-tag-m')[s]; if (t) t.classList.add('selected'); });
+    });
+    document.getElementById('tacticsResultM').classList.remove('active');
+    overlay.classList.add('active');
+}
+
+function closeTacticsModalM() {
+    document.getElementById('tacticsModalM').classList.remove('active');
+}
+
+function analyzeTacticsM() {
+    const btn = document.getElementById('analyzeBtnM');
+    btn.disabled = true;
+    btn.textContent = '🤔 AI分析中...';
+    setTimeout(() => {
+        const players = [];
+        for (let i = 1; i <= 5; i++) {
+            const pos = document.getElementById(`mpos_${i}`).value;
+            const hgt = parseInt(document.getElementById(`mhgt_${i}`).value) || 180;
+            const skills = Array.from(document.querySelectorAll(`#mskills_${i} .skill-tag-m.selected`)).map(e => e.dataset.s);
+            players.push({ pos, height: hgt, skills });
+        }
+        const avgH = players.reduce((s, p) => s + p.height, 0) / 5;
+        const allS = players.flatMap(p => p.skills);
+        const bigs = players.filter(p => p.pos === 'PF' || p.pos === 'C').length;
+        const guards = players.filter(p => p.pos === 'PG' || p.pos === 'SG').length;
+        const shoot = allS.filter(s => s === '投篮' || s === '三分').length;
+        const speed = allS.filter(s => s === '速度').length;
+        const pass = allS.filter(s => s === '传球').length;
+        const strong = players.some(p => (p.pos === 'C' || p.pos === 'PF') && p.skills.includes('力量'));
+        const tallest = Math.max(...players.map(p => p.height));
+
+        const scores = { horns: 50, pickroll: 60, triangle: 40, fastbreak: 45 };
+        if (bigs >= 2) scores.horns += 25; else if (bigs === 1) scores.horns += 10;
+        if (shoot >= 2) scores.horns += 15;
+        if (players.some(p => p.pos === 'PG' && p.skills.includes('运球'))) scores.horns += 10;
+        const rHorns = `${bigs}名内线${bigs >= 2 ? '，双内线完美匹配' : '，建议增加内线'}。${shoot >= 2 ? '投篮能力突出。' : ''}`;
+
+        if (guards >= 1 && bigs >= 1) scores.pickroll += 25;
+        if (pass >= 1) scores.pickroll += 10;
+        const rPR = `后卫+内线经典组合${guards >= 1 && bigs >= 1 ? '，天然适配' : ''}。${pass >= 1 ? '传球能力强。' : ''}挡拆最实用。`;
+
+        if (strong) scores.triangle += 25;
+        if (pass >= 2) scores.triangle += 20;
+        if (tallest >= 190) scores.triangle += 10;
+        const rTri = `${tallest >= 190 ? '最高' + tallest + 'cm，' : ''}${strong ? '力量型内线可背打。' : '缺低位威胁。'}${pass >= 2 ? '传球意识好。' : ''}`;
+
+        if (speed >= 2) scores.fastbreak += 25; else if (speed === 1) scores.fastbreak += 10;
+        if (guards >= 2) scores.fastbreak += 15;
+        if (avgH < 185) scores.fastbreak += 10;
+        const rFB = `${speed >= 2 ? speed + '名速度型球员。' : '速度不足。'}${avgH < 185 ? '阵容灵活适合跑轰。' : '阵容偏高落阵地更稳。'}`;
+
+        const reasons = { horns: rHorns, pickroll: rPR, triangle: rTri, fastbreak: rFB };
+        const names = { horns: '牛角战术', pickroll: '挡拆战术', triangle: '三角进攻', fastbreak: '快攻战术' };
+        const emojis = { horns: '🏀', pickroll: '🏀', triangle: '🔺', fastbreak: '⚡' };
+        const best = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+
+        document.getElementById('tacticsResultM').innerHTML = `
+            <div class="r-badge">✨ 最佳匹配 ${Math.round(scores[best])}%</div>
+            <h4>${emojis[best]} 推荐：${names[best]}</h4>
+            <p class="r-reason">${reasons[best]}</p>
+            <div class="r-scores">
+                ${Object.keys(scores).map(t => `
+                    <div class="score-m">
+                        <div class="s-label">${names[t]}</div>
+                        <div class="s-bar"><div class="s-fill" style="width:${Math.min(scores[t],100)}%"></div></div>
+                        <div class="s-val">${Math.round(scores[t])}%</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="r-actions">
+                <button class="r-btn primary" onclick="applyTacticM('${best}')">查看演示</button>
+                <button class="r-btn" onclick="closeTacticsModalM()">关闭</button>
+            </div>
+        `;
+        document.getElementById('tacticsResultM').classList.add('active');
+        btn.disabled = false;
+        btn.textContent = '🔍 重新分析';
+    }, 1200);
+}
+
+function applyTacticM(tactic) {
+    closeTacticsModalM();
+    const tab = document.querySelector(`.tactics-tab[onclick*="${tactic}"]`);
+    if (tab) switchTactic(tactic, tab);
+}
+
+// ========== 移动版AI陪练聊天 ==========
+let chatCtxM = { lastTopic: null, msgCount: 0 };
+
+const chatKB = [
+    { kws: ['运球','控球','拍球'], topic: 'dribble',
+      resp: '运球4个核心要点：\n\n✅ 五指张开，掌心空出\n✅ 手腕下压发力\n✅ 眼睛看前方\n✅ 左右手均衡练\n\n先从原地运球开始，每天15分钟，一周后有球感！',
+      fu: ['变向怎么练','左手不稳','运球老飞'] },
+    { kws: ['投篮','射球','投球','命中'], topic: 'shoot',
+      resp: '投篮"三个一"：\n\n🎯 手型：五指分开，食指中指拨球\n🎯 发力：屈膝蹬地，力量由下而上\n🎯 跟随：出手保持鹅颈姿势\n\n先从篮下1米练手型，稳定再拉远！',
+      fu: ['弧度太低','罚球怎么练','三分怎么投'] },
+    { kws: ['上篮','三步','挑篮','打板'], topic: 'layup',
+      resp: '三步上篮"右-左-跳"：\n\n1️⃣ 抱球迈右脚\n2️⃣ 左脚蹬地起跳\n3️⃣ 挑球打板\n\n瞄准篮板右上角小方框，先慢后快！',
+      fu: ['左手上篮','被封盖','反手上篮'] },
+    { kws: ['走步','轴心脚','带球走'], topic: 'travel',
+      resp: '走步判断：\n\n👉 接球后可迈2步\n👉 停球后不能移轴心脚\n👉 轴心脚可旋转不可移动\n\n野球场最常见争议，多注意！',
+      fu: ['二次运球','翻腕','发球规则'] },
+    { kws: ['规则','犯规','违例','裁判'], topic: 'rules',
+      resp: '新手必知5大规则：\n\n1️⃣ 走步：抱球不超2步\n2️⃣ 二次运球：停球不再运\n3️⃣ 打手：碰到对方手腕\n4️⃣ 24秒：必须投篮碰框\n5️⃣ 回场：过半场不可回',
+      fu: ['挡拆犯规吗','3秒违例','技术犯规'] },
+    { kws: ['装备','球鞋','护具','鞋'], topic: 'gear',
+      resp: '新手装备优先级：\n\n🥇 篮球(PU,100元)\n🥈 运动鞋(耐磨就行)\n🥉 护踝(防扭伤!)\n\n选鞋：后卫低帮轻便，内线高帮缓震。预算300-500够用！',
+      fu: ['篮球怎么选','护踝推荐','入门球鞋'] },
+    { kws: ['训练','计划','练什么','怎么练'], topic: 'training',
+      resp: '一周训练计划：\n\n📅 周一：运球15min\n📅 周三：投篮30min\n📅 周五：上篮30min\n📅 周日：综合1h\n\n坚持比强度重要！每天15min > 一周一次3h。',
+      fu: ['体能怎么练','在家练什么','热身怎么做'] },
+    { kws: ['战术','配合','挡拆','跑位'], topic: 'tactics',
+      resp: '新手3个基础战术：\n\n🏀 挡拆：内线帮后卫挡人\n🏀 传切：传球后空切篮下\n🏀 突分：突破后分球外线\n\n试试上方AI战术板，输入阵容获取专属建议！',
+      fu: ['挡拆怎么配合','怎么跑位','战术板怎么用'] },
+    { kws: ['防守','盯人','联防'], topic: 'defense',
+      resp: '防守3原则：\n\n🛡️ 降低重心\n🛡️ 看腰不看球\n🛡️ 保持一臂距离\n\n常见错误：扑球、跳起、看球不看人',
+      fu: ['防突破','盯人联防','老被过'] },
+    { kws: ['心态','紧张','不敢','怕','害怕'], topic: 'mindset',
+      resp: '不敢上场很正常！💪\n\n1️⃣ 先自己练，有基础再上场\n2️⃣ 找信任的朋友先打\n3️⃣ 设小目标：不求得分，先不失误\n\n每个人都是从菜鸟开始的。球场见！',
+      fu: ['老失误','被嘲笑','融入球队'] },
+    { kws: ['你好','hello','hi','嗨','在吗'], topic: 'greeting',
+      resp: '嗨！我是球场见 🏀\n\n今天想练什么？我可以帮你：\n• 制定训练计划\n• 纠正动作\n• 讲解规则\n• 克服紧张\n\n随便问！',
+      fu: ['新手怎么开始','明天练什么','投篮不进'] },
+    { kws: ['谢谢','感谢','有用'], topic: 'thanks',
+      resp: '不客气！能帮到你就好 🏀\n\n记住：练习不在长短，在坚持。加油！',
+      fu: ['明天练什么','还有什么建议'] },
+    { kws: ['体能','体力','耐力','喘'], topic: 'fitness',
+      resp: '篮球体能(在家可做)：\n\n🏃 跳绳3min×5组\n💪 深蹲15×3组\n💪 俯卧撑15×3组\n⚡ 折返跑5趟×3组\n\n坚持2周，上场不喘！',
+      fu: ['跳绳练什么','核心怎么练','热身'] },
+    { kws: ['热身','拉伸','准备活动'], topic: 'warmup',
+      resp: '5分钟热身流程：\n\n1️⃣ 慢跑2圈\n2️⃣ 动态拉伸(高抬腿/弓步压腿)\n3️⃣ 原地运球2min+近距离投篮10个\n\n不热身=扭伤高风险！',
+      fu: ['打完怎么拉伸','护踝','抽筋'] },
+    { kws: ['受伤','扭伤','脚踝','膝盖'], topic: 'injury',
+      resp: 'RICE急救法则：\n\n🧊 休息+冰敷(48h内)\n🧊 加压包扎\n🧊 抬高患处\n\n预防：护踝+充分热身。严重请就医！',
+      fu: ['护踝怎么选','膝盖疼','热身'] }
+];
+
+const encouragementsM = ['💪 你在进步！坚持就是胜利','🏀 NBA球员也是从零开始','⭐ 好问题！说明你在认真思考','🔥 保持这股劲头！'];
+
+function smartMatchM(text) {
+    const lt = text.toLowerCase();
+    let best = null, bestScore = 0;
+    for (const e of chatKB) {
+        let sc = 0;
+        for (const kw of e.kws) { if (lt.includes(kw.toLowerCase())) sc += kw.length; }
+        if (sc > bestScore) { bestScore = sc; best = e; }
+    }
+    return best;
+}
+
+function toggleChatM() {
+    const w = document.getElementById('chatWindowM');
+    w.classList.toggle('active');
+    if (w.classList.contains('active')) document.getElementById('chatInputM').focus();
+}
+function closeChatM() { document.getElementById('chatWindowM').classList.remove('active'); }
+
+function showTypingM() {
+    const c = document.getElementById('chatMessagesM');
+    const t = document.createElement('div');
+    t.className = 'chat-msg-m bot typing-m';
+    t.id = 'typingM';
+    t.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+    c.appendChild(t);
+    c.scrollTop = c.scrollHeight;
+}
+function hideTypingM() { const t = document.getElementById('typingM'); if (t) t.remove(); }
+
+function addMsgM(text, type) {
+    const c = document.getElementById('chatMessagesM');
+    const m = document.createElement('div');
+    m.className = `chat-msg-m ${type}`;
+    m.textContent = text;
+    c.appendChild(m);
+    c.scrollTop = c.scrollHeight;
+}
+
+function sendQuickReplyM(text) {
+    addMsgM(text, 'user');
+    chatCtxM.msgCount++;
+    document.getElementById('chatQuickM').style.display = 'none';
+    showTypingM();
+    setTimeout(() => {
+        hideTypingM();
+        const m = smartMatchM(text);
+        let resp = m ? m.resp : '试试问我：运球、投篮、规则、训练、装备等问题 🏀';
+        if (m) {
+            chatCtxM.lastTopic = m.topic;
+            if (m.fu) resp += '\n\n💡 还可以问：' + m.fu.map(f => '"' + f + '"').join(' / ');
+        }
+        if (chatCtxM.msgCount % 3 === 0) resp += '\n\n— ' + encouragementsM[chatCtxM.msgCount % encouragementsM.length];
+        addMsgM(resp, 'bot');
+        if (m && m.fu) {
+            const c = document.getElementById('chatQuickM');
+            c.innerHTML = m.fu.map(f => `<button class="chat-quick-btn-m" onclick="sendQuickReplyM('${f}')">${f}</button>`).join('');
+            c.style.display = 'flex';
+        }
+    }, 800 + Math.random() * 400);
+}
+
+function sendUserMessageM() {
+    const input = document.getElementById('chatInputM');
+    const text = input.value.trim();
+    if (!text) return;
+    addMsgM(text, 'user');
+    input.value = '';
+    chatCtxM.msgCount++;
+    showTypingM();
+    setTimeout(() => {
+        hideTypingM();
+        const m = smartMatchM(text);
+        let resp;
+        if (m) {
+            resp = m.resp;
+            chatCtxM.lastTopic = m.topic;
+            if (m.fu) resp += '\n\n💡 还可以问：' + m.fu.map(f => '"' + f + '"').join(' / ');
+        } else {
+            resp = `我擅长：运球/投篮/上篮/规则/装备/训练/战术/防守/体能/心态\n\n随便挑一个问我吧！ 🏀`;
+        }
+        if (chatCtxM.msgCount % 3 === 0) resp += '\n\n— ' + encouragementsM[chatCtxM.msgCount % encouragementsM.length];
+        addMsgM(resp, 'bot');
+        if (m && m.fu) {
+            const c = document.getElementById('chatQuickM');
+            c.innerHTML = m.fu.map(f => `<button class="chat-quick-btn-m" onclick="sendQuickReplyM('${f}')">${f}</button>`).join('');
+            c.style.display = 'flex';
+        } else {
+            const c = document.getElementById('chatQuickM');
+            c.innerHTML = `<button class="chat-quick-btn-m" onclick="sendQuickReplyM('新手怎么开始')">新手怎么开始？</button><button class="chat-quick-btn-m" onclick="sendQuickReplyM('投篮不进')">投篮不进</button><button class="chat-quick-btn-m" onclick="sendQuickReplyM('不敢上场')">不敢上场</button>`;
+            c.style.display = 'flex';
+        }
+    }, 800 + Math.random() * 500);
 }
 </script>
 

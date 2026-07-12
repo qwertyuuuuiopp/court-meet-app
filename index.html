@@ -2337,31 +2337,31 @@ function analyzeTacticsM() {
         }
 
         const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-        const top3 = sorted.slice(0, 3);
+        const top5 = sorted.slice(0, 5);
 
         if (hasApiKeyM() && getRemainingM() > 0) {
             btn.textContent = '🤖 DeepSeek深度分析中...';
-            generateAITacticalAnalysisM(players, teamTraits, oppHeight, oppSpeed, oppWeaknesses, top3, scores, reasons, weaknessMap);
+            generateAITacticalAnalysisM(players, teamTraits, oppHeight, oppSpeed, oppWeaknesses, top5, scores, reasons, weaknessMap);
         } else {
-            renderTacticsResultM(top3, scores, reasons, null);
+            renderTacticsResultM(top5, scores, reasons, null);
             btn.disabled = false;
             btn.textContent = '🔍 重新分析';
         }
     }, 800);
 }
 
-async function generateAITacticalAnalysisM(players, teamTraits, oppHeight, oppSpeed, oppWeaknesses, top3, scores, reasons, weaknessMap) {
+async function generateAITacticalAnalysisM(players, teamTraits, oppHeight, oppSpeed, oppWeaknesses, top5, scores, reasons, weaknessMap) {
     const teamDesc = `我方阵容：${players.map((p,i) => `${i+1}号(${p.pos},${p.height}cm,特长:${p.skills.join('/')||'无'})`).join('；')}。平均身高${teamTraits.avgHeight}cm，${teamTraits.bigs}名内线，${teamTraits.guards}名后卫。投篮${teamTraits.shooting}人，速度${teamTraits.speed}人，传球${teamTraits.passing}人。`;
     const oppDesc = `对手特点：平均身高${oppHeight}，速度${oppSpeed}，弱点：${oppWeaknesses.length ? oppWeaknesses.map(w => weaknessMap[w]).join('、') : '暂无明显弱点'}。`;
-    const top3Desc = top3.map(([k, v], i) => `第${i+1}推荐：${tacticsDB[k].name}(${Math.round(v)}分)。理由：${reasons[k]}`).join('\n');
+    const top5Desc = top5.map(([k, v], i) => `第${i+1}推荐：${tacticsDB[k].name}(${Math.round(v)}分)。理由：${reasons[k]}`).join('\n');
 
     const prompt = `作为篮球战术分析师，根据以下信息给出个性化战术建议：
 
 ${teamDesc}
 ${oppDesc}
 
-算法初筛排名前三的战术：
-${top3Desc}
+算法初筛排名前五的战术：
+${top5Desc}
 
 请基于以上信息，用100-150字给出你的专业见解：
 1. 确认或调整推荐排序
@@ -2388,12 +2388,12 @@ ${top3Desc}
             const data = await response.json();
             const aiAnalysis = data.choices[0].message.content;
             incrementUsageM();
-            renderTacticsResultM(top3, scores, reasons, aiAnalysis);
+            renderTacticsResultM(top5, scores, reasons, aiAnalysis);
         } else {
-            renderTacticsResultM(top3, scores, reasons, null);
+            renderTacticsResultM(top5, scores, reasons, null);
         }
     } catch (e) {
-        renderTacticsResultM(top3, scores, reasons, null);
+        renderTacticsResultM(top5, scores, reasons, null);
     }
 
     const btn = document.getElementById('analyzeBtnM');
@@ -2401,56 +2401,50 @@ ${top3Desc}
     btn.textContent = '🔍 重新分析';
 }
 
-function renderTacticsResultM(top3, scores, reasons, aiAnalysis) {
+function renderTacticsResultM(top5, scores, reasons, aiAnalysis) {
     const result = document.getElementById('tacticsResultM');
-    const [bestKey, bestScore] = top3[0];
+    const [bestKey, bestScore] = top5[0];
     const best = tacticsDB[bestKey];
 
     let html = `
         <div class="r-badge">✨ 最佳匹配 ${Math.round(bestScore)}%</div>
-        <h4>${best.emoji} 推荐：${best.name}</h4>
-        <p class="r-reason">${best.desc}</p>
-        <p class="r-reason" style="color:var(--gold);font-size:12px;">${reasons[bestKey]}</p>
     `;
 
     if (aiAnalysis) {
         html += `
-            <div style="margin:12px 0;padding:12px;border-radius:10px;background:rgba(85,37,131,0.15);border:1px solid rgba(85,37,131,0.3);">
+            <div style="margin:10px 0 14px;padding:12px;border-radius:10px;background:rgba(85,37,131,0.15);border:1px solid rgba(85,37,131,0.3);">
                 <div style="color:#7B3FA0;font-weight:700;font-size:12px;margin-bottom:6px;">🤖 DeepSeek AI深度分析</div>
                 <div style="font-size:12px;line-height:1.6;color:var(--text-primary);">${aiAnalysis}</div>
             </div>
         `;
     }
 
-    html += '<div class="r-scores">';
-    top3.forEach(([k, v]) => {
+    // 5个战术详情卡片
+    top5.forEach(([k, v], idx) => {
+        const t = tacticsDB[k];
+        const isBest = idx === 0;
+        const medal = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][idx];
+        const demoTactics = ['horns', 'pickroll', 'triangle', 'fastbreak'];
+        const hasDemo = demoTactics.includes(k);
+
         html += `
-            <div class="score-m">
-                <div class="s-label">${tacticsDB[k].name}</div>
-                <div class="s-bar"><div class="s-fill" style="width:${Math.min(v, 100)}%"></div></div>
-                <div class="s-val">${Math.round(v)}%</div>
+            <div style="margin-bottom:12px;padding:12px;border-radius:10px;background:${isBest ? 'rgba(245,166,35,0.08)' : 'rgba(255,255,255,0.03)'};border:1px solid ${isBest ? 'rgba(245,166,35,0.25)' : 'rgba(255,255,255,0.06)'};">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:16px;">${medal}</span>
+                        <span style="font-size:14px;font-weight:700;color:${isBest ? 'var(--gold)' : 'var(--text-primary)'};">${t.emoji} ${t.name}</span>
+                    </div>
+                    <span style="font-size:14px;font-weight:800;color:${isBest ? 'var(--gold)' : 'var(--text-secondary)'};">${Math.round(v)}%</span>
+                </div>
+                <p style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:4px;">${t.desc}</p>
+                <p style="font-size:10px;color:${isBest ? 'var(--gold)' : '#8bc34a'};margin-bottom:6px;">${reasons[k]}</p>
+                <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px;">
+                    ${t.steps.map((s, i) => `<span style="font-size:9px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,0.05);color:var(--text-secondary);">${i+1}.${s}</span>`).join('')}
+                </div>
+                <button class="r-btn ${isBest ? 'primary' : ''}" style="font-size:10px;padding:4px 12px;" onclick="applyTacticM('${k}')">${hasDemo ? '查看演示' : '查看类似演示'}</button>
             </div>
         `;
     });
-    html += '</div>';
-
-    if (top3[1]) {
-        html += `<p style="font-size:11px;color:var(--text-secondary);margin-top:8px;">💡 备选：${tacticsDB[top3[1][0]].name}(${Math.round(top3[1][1])}%)</p>`;
-    }
-    if (top3[2]) {
-        html += `<p style="font-size:11px;color:var(--text-secondary);">💡 备选：${tacticsDB[top3[2][0]].name}(${Math.round(top3[2][1])}%)</p>`;
-    }
-
-    html += `
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
-            <div style="font-size:12px;font-weight:700;margin-bottom:6px;">📋 执行步骤：</div>
-            ${best.steps.map((s, i) => `<div style="display:flex;align-items:center;font-size:11px;color:var(--text-secondary);margin-bottom:4px;"><span style="width:18px;height:18px;background:var(--gold);color:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-right:6px;flex-shrink:0;">${i+1}</span>${s}</div>`).join('')}
-        </div>
-        <div class="r-actions">
-            <button class="r-btn primary" onclick="applyTacticM('${bestKey}')">${demoTactics.includes(bestKey) ? '查看演示' : '查看类似演示'}</button>
-            <button class="r-btn" onclick="closeTacticsModalM()">关闭</button>
-        </div>
-    `;
 
     result.innerHTML = html;
     result.classList.add('active');
@@ -2458,6 +2452,7 @@ function renderTacticsResultM(top3, scores, reasons, aiAnalysis) {
 
 function applyTacticM(tactic) {
     closeTacticsModalM();
+    const demoTactics = ['horns', 'pickroll', 'triangle', 'fastbreak'];
     if (demoTactics.includes(tactic)) {
         const tab = document.querySelector(`.tactics-tab[onclick*="${tactic}"]`);
         if (tab) {
@@ -2466,7 +2461,13 @@ function applyTacticM(tactic) {
         }
     } else {
         const cat = tacticsDB[tactic].cat;
-        const similar = demoTactics.find(k => tacticsDB[k].cat === cat) || 'pickroll';
+        const name = tacticsDB[tactic].name;
+        let similar = 'pickroll';
+        if (name.includes('牛角')) similar = 'horns';
+        else if (name.includes('挡拆') || name.includes('手递手') || name.includes('Spain')) similar = 'pickroll';
+        else if (name.includes('三角') || name.includes('高低') || name.includes('内外') || name.includes('背身')) similar = 'triangle';
+        else if (cat === '转换进攻' || name.includes('快') || name.includes('反跑')) similar = 'fastbreak';
+        else similar = 'horns';
         const tab = document.querySelector(`.tactics-tab[onclick*="${similar}"]`);
         if (tab) {
             switchTactic(similar, tab);

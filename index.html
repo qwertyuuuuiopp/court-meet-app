@@ -2306,7 +2306,7 @@ function getRemainingM() { return Math.max(0, DS_DAILY_LIMIT - getDailyUsageM())
 function toggleApiKeyPanelM() {
     const p = document.getElementById('apiKeyPanelM');
     p.classList.toggle('active');
-    if (p.classList.contains('active')) { document.getElementById('apiKeyInputM').value = localStorage.getItem('deepseek_api_key') || ''; document.getElementById('apiKeyInputM').focus(); }
+    if (p.classList.contains('active')) { document.getElementById('apiKeyInputM').value = ''; document.getElementById('apiKeyInputM').focus(); }
 }
 function saveApiKeyM() {
     const key = document.getElementById('apiKeyInputM').value.trim();
